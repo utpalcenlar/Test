@@ -1,0 +1,664 @@
+I’m reviewing the Foundry guidance first, then I’ll synthesize the full architecture from the prior conversation context into a plain-text design with diagrams and rationale.
+
+Read skill [microsoft-foundry](file:///c%3A/Users/workshopuser2/.agents/skills/microsoft-foundry/SKILL.md?vscodeLinkType%3Dskill)
+
+**Problem And Use Case**
+
+You started with a very practical goal: place the TicketDeflection assistant inside your portal so users can ask for help without being thrown into a separate bot experience, a login card, or another authentication journey.
+
+What we learned from the earlier investigation is the key architectural fact that drives everything else:
+
+- The Foundry workflow itself is not asking the user to sign in.
+- The login prompt appears when the assistant is exposed through the Bot Service / channel / Activity Protocol path.
+- The Foundry preview works because it uses the Foundry portal and its own authenticated path, not Bot Service.
+
+So the real problem is not “how do we hide a login card?” The real problem is:
+
+- How do we let an already-authenticated portal user talk to the TicketDeflection Foundry app
+- without exposing Foundry directly to the browser
+- without relying on Bot Service channels
+- while keeping security, governance, observability, and future enterprise review in place
+
+That leads to the solution pattern we agreed on:
+
+```text
+Portal UI -> APIM -> BFF (Azure Function) -> Azure AI Foundry application
+```
+
+This is the right shape for your use case because it separates concerns cleanly:
+the portal owns user experience and user auth, APIM owns API governance, the BFF owns server-side orchestration, and Foundry owns the AI behavior.
+
+---
+
+**Executive View**
+
+```text
+Business Need
+    |
+    v
+Users in the portal need self-service ticket deflection
+without extra sign-in prompts and without exposing AI credentials
+    |
+    v
+Problem With Old Path
+Portal -> Web Chat -> Direct Line / Bot Service -> Foundry Channel
+                                   |
+                                   +-> login prompt injected by channel/auth path
+    |
+    v
+New Path
+Portal -> APIM -> Function BFF -> Foundry Responses API
+```
+
+---
+
+**What Happened In The First POC**
+
+The first POC used a Bot Framework style pattern:
+
+```text
+Browser
+  |
+  v
+Static Web App
+  |
+  v
+Web Chat + Direct Line token broker
+  |
+  v
+Azure Bot Service
+  |
+  v
+Published Foundry application through channels
+```
+
+That looked reasonable at first, but it created a mismatch:
+
+- Your portal session was already authenticated.
+- Bot Service / channel integration introduced its own auth expectations.
+- The user ended up seeing a Foundry login card even though the workflow did not require that business behavior.
+
+This is why the current architecture is not just a refactor. It is a correction of the integration boundary.
+
+---
+
+**Target Technical Architecture**
+
+```text
++--------------------------------------------------------------+
+|                          User Browser                        |
+|                                                              |
+|  Portal page hosts the TicketDeflection chat experience      |
+|  User is already authenticated by the portal/backend         |
++-------------------------------+------------------------------+
+                                |
+                                | HTTPS
+                                v
++--------------------------------------------------------------+
+|                    API Management (APIM)                     |
+|                                                              |
+|  Responsibilities:                                           |
+|  - Single public API surface                                |
+|  - CORS                                                      |
+|  - throttling / quotas                                       |
+|  - request size limits                                       |
+|  - correlation IDs                                           |
+|  - API versioning                                            |
+|  - logging / analytics                                       |
+|  - policy enforcement                                        |
++-------------------------------+------------------------------+
+                                |
+                                | HTTPS
+                                v
++--------------------------------------------------------------+
+|                 BFF / Thin Backend (Azure Function)          |
+|                                                              |
+|  Responsibilities:                                           |
+|  - trust the caller path coming from portal/APIM             |
+|  - validate request payload                                  |
+|  - normalize message schema                                  |
+|  - attach conversation/session metadata                      |
+|  - acquire token using managed identity                      |
+|  - call Foundry Responses endpoint                           |
+|  - shape AI response for the UI                              |
+|  - handle retry / timeout / fallback behavior                |
+|  - emit telemetry                                             |
++-------------------------------+------------------------------+
+                                |
+                                | Managed Identity / RBAC
+                                v
++--------------------------------------------------------------+
+|               Azure AI Foundry Project / Application         |
+|                                                              |
+|  TicketDeflection application                                |
+|  - workflow logic                                             |
+|  - classification agent                                       |
+|  - matrix/on-demand agent                                     |
+|  - model execution                                            |
+|  - response generation                                        |
++--------------------------------------------------------------+
+```
+
+---
+
+**Human-Level Explanation Of Each Layer**
+
+**1. Portal**
+
+This is where the conversation starts, but it should stay deliberately simple. The portal should not know how to call Foundry directly, hold Foundry credentials, or understand internal AI orchestration details.
+
+Its job is to:
+
+- render the chat interface
+- hold the local conversation view
+- send user messages to a single backend API
+- show replies, loading states, and friendly errors
+
+In plain terms: the portal should feel like “a clean front door,” not “an AI integration client.”
+
+---
+
+**2. APIM**
+
+APIM is the controlled entrance to your backend API.
+
+Without APIM, the browser would call the Function directly. That can work for a small demo, but it pushes gateway concerns into code or leaves them unmanaged. APIM gives you a clean policy layer in front of the Function.
+
+Its role here is:
+
+- expose one stable URL for the portal
+- enforce traffic policies before the Function runs
+- help with CORS, throttling, quotas, and analytics
+- give the enterprise review board a proper API gateway story
+- make future backend swaps invisible to the frontend
+
+Human version: APIM is the receptionist and security desk. It does not answer the business question itself, but it decides who gets through, how fast, and under what rules.
+
+---
+
+**3. BFF / Azure Function**
+
+The Function is the most important integration layer in this design.
+
+This is where you keep the intelligence of the integration, not the intelligence of the AI model. The Function should stay thin but decisive.
+
+It helps because it:
+
+- keeps Foundry credentials off the client
+- converts the portal request into the exact schema Foundry expects
+- applies server-side validation
+- attaches session and trace context
+- handles retries and timeouts
+- strips unwanted internal metadata from the response
+- gives you a place for business-specific guardrails later
+
+Human version: the Function is the interpreter between your portal and Foundry. The portal speaks “user chat.” Foundry speaks “AI application protocol.” The Function makes those two talk cleanly.
+
+---
+
+**4. Azure AI Foundry**
+
+Foundry remains the AI execution layer, not the public web API layer.
+
+It should own:
+
+- the TicketDeflection workflow
+- prompt/agent coordination
+- classification and answer generation
+- future evaluation and optimization of the AI behavior
+
+It should not be exposed directly to the browser because then you lose control over:
+credentials, request shaping, rate limiting, telemetry consistency, and governance.
+
+Human version: Foundry is the brain. It should not also be the public-facing receptionist.
+
+---
+
+**Detailed Request Flow**
+
+```text
+Step 1
+User opens the portal and starts a chat.
+
+Step 2
+Portal frontend sends:
+POST /chat
+to APIM, with the user's message and lightweight session metadata.
+
+Step 3
+APIM applies policies:
+- checks allowed origin
+- limits burst traffic
+- injects correlation ID
+- forwards the request to the Function
+
+Step 4
+Function validates:
+- message exists
+- size is acceptable
+- conversation/session ID is present or created
+- caller payload matches expected schema
+
+Step 5
+Function obtains an Azure AD token using managed identity.
+
+Step 6
+Function calls the Foundry application over the Responses path.
+
+Step 7
+Foundry runs TicketDeflection logic:
+- classify request
+- consult workflow logic / connected agents
+- generate the response
+
+Step 8
+Function receives the raw Foundry output, normalizes it,
+and returns only what the portal needs.
+
+Step 9
+APIM logs the transaction and returns the response to the browser.
+
+Step 10
+Portal renders the assistant reply.
+```
+
+---
+
+**Trust And Authentication Model**
+
+You noted an important condition: authentication and authorization are already handled by the portal backend.
+
+That changes the design in a useful way. It means the new chat solution does not need to invent a second end-user identity model. Instead, it should preserve the portal’s trust boundary.
+
+The practical trust model becomes:
+
+```text
+User authenticates with the portal
+    |
+    v
+Portal decides the user is allowed to use the assistant
+    |
+    v
+Frontend calls APIM/BFF as part of the portal experience
+    |
+    v
+BFF authenticates to Foundry as an application identity
+```
+
+So there are two very different kinds of auth here:
+
+**User auth**
+- already handled by the portal side
+- decides whether the person can use the chat feature
+
+**Service-to-service auth**
+- handled by managed identity and RBAC
+- allows the Function to call Foundry securely
+
+This separation is healthy. It avoids forcing Foundry to participate in the end-user login experience.
+
+---
+
+**Why Direct Browser To Foundry Is Still A Bad Idea Even If Portal Auth Exists**
+
+This point is worth stating clearly because it often gets blurred.
+
+Portal auth proves who the user is to your portal.
+It does not safely solve how the browser should call Foundry.
+
+If the browser calls Foundry directly, one of these happens:
+
+- you expose a key
+- you mint a token to the browser
+- you widen CORS/network exposure
+- you lose server-side control and shaping
+
+That is why portal authentication does not remove the need for a BFF. It only means the BFF can stay focused and thin, because it does not have to perform full end-user login itself.
+
+---
+
+**Why Function App Is A Better Fit Than Logic Apps Here**
+
+For this specific use case, the backend is not a workflow engine. It is a request/response adapter.
+
+What the BFF needs is:
+
+- low latency
+- code-level control
+- easy request shaping
+- clean error handling
+- managed identity
+- future support for streaming or more custom logic
+
+That strongly favors Azure Functions.
+
+Logic Apps becomes attractive when the problem is more like:
+
+- long-running business orchestration
+- approvals
+- branching workflows across multiple SaaS systems
+- durable stateful integration
+
+Your chat path is not that. It is closer to an API adapter than a workflow.
+
+A simple comparison:
+
+```text
+Function App
+- best for thin code-based API layer
+- low latency
+- easy to test
+- better for custom chat behavior
+- good fit for managed identity + HTTP handling
+
+Logic Apps
+- best for orchestration and connector-heavy flows
+- more overhead per request
+- less natural for chat-style low-latency exchange
+- can work, but is not the cleanest fit here
+```
+
+So the answer is:
+Logic Apps is a possible alternative, but not a good primary choice for this design.
+
+---
+
+**Why APIM Is Worth Having In Front Of The Function**
+
+For a quick personal demo, you could skip APIM.
+For the solution you are building, APIM is useful for three reasons:
+
+**1. Governance**
+This is the clean story for ARB and enterprise reviewers.
+You can show:
+- a managed API front door
+- policy-driven throttling
+- central analytics
+- versioning
+- controlled exposure
+
+**2. Safety**
+If a portal bug, bot loop, or client-side issue suddenly floods requests, APIM can protect the Function and the Foundry backend before cost or performance runs away.
+
+**3. Future-proofing**
+Today the backend may be a Function.
+Tomorrow it could be a Container App, App Service, or a different BFF implementation.
+If APIM is the stable contract, the portal does not care.
+
+Human version: APIM is less about “making it work” and more about “making it sustainable.”
+
+---
+
+**Logical View**
+
+```text
+[Presentation Layer]
+Portal web page
+Chat widget
+Client-side conversation state
+
+[API Edge Layer]
+APIM
+Policies
+Analytics
+Versioning
+Traffic protection
+
+[Application Integration Layer]
+Azure Function BFF
+Validation
+Session handling
+Foundry request/response mapping
+Telemetry
+Error normalization
+
+[AI Execution Layer]
+Azure AI Foundry application
+TicketDeflection workflow
+Supporting agents
+Model inference
+
+[Platform Security Layer]
+Portal auth for user access
+Managed identity for Function -> Foundry
+RBAC on Foundry resources
+Network and policy controls through APIM
+```
+
+---
+
+**Data Flow View**
+
+```text
+User Message
+  -> portal chat UI
+  -> APIM request policy
+  -> Function validation + enrichment
+  -> Foundry prompt/workflow execution
+  -> Function response normalization
+  -> APIM response path
+  -> portal rendering
+```
+
+---
+
+**Security Architecture**
+
+```text
++--------------------------------------------------------------+
+| User identity lives at portal boundary                       |
++--------------------------------------------------------------+
+
++--------------------------------------------------------------+
+| Browser never receives Foundry credentials                   |
++--------------------------------------------------------------+
+
++--------------------------------------------------------------+
+| Function uses managed identity to call Foundry               |
++--------------------------------------------------------------+
+
++--------------------------------------------------------------+
+| Foundry access controlled by RBAC on the application/project |
++--------------------------------------------------------------+
+
++--------------------------------------------------------------+
+| APIM applies traffic controls and exposure rules             |
++--------------------------------------------------------------+
+```
+
+Security principles behind the design:
+
+- no Foundry secret in the browser
+- no direct browser dependency on Foundry endpoint behavior
+- no duplication of end-user auth in the AI layer
+- least-privilege service identity from Function to Foundry
+- controlled public API surface through APIM
+
+---
+
+**Operational Architecture**
+
+```text
+Portal
+  |
+  +-> client telemetry for UX events
+
+APIM
+  |
+  +-> request metrics
+  +-> latency / throughput analytics
+  +-> policy-based logging
+
+Function
+  |
+  +-> application logs
+  +-> error traces
+  +-> correlation IDs
+  +-> Foundry call timings
+
+Foundry
+  |
+  +-> model/app traces
+  +-> evaluation and quality monitoring
+```
+
+This is important because once the assistant is live, the first questions are rarely “does it run?”
+They are usually:
+- why was this answer poor?
+- where is the latency?
+- who is generating traffic?
+- what failed: UI, gateway, BFF, or AI?
+
+This architecture gives you places to answer those questions.
+
+---
+
+**Failure Handling Model**
+
+A realistic production-ready architecture should define failure boundaries:
+
+```text
+If APIM blocks request
+-> user gets controlled 429 or policy-driven error
+
+If Function validation fails
+-> user gets clean 400 with friendly UI message
+
+If Function cannot get token
+-> backend logs auth failure, user gets generic service error
+
+If Foundry times out
+-> Function returns graceful fallback message
+   such as "I’m having trouble right now, please try again."
+
+If Foundry returns malformed or unexpected output
+-> Function normalizes or suppresses unsafe/internal fields
+```
+
+This matters because a chat experience must fail politely. Raw backend failures should never leak into the UI.
+
+---
+
+**Conversation State Approach**
+
+For the POC, the simplest approach is:
+
+- keep lightweight display history in the browser
+- send enough recent context to the BFF on each call
+- let the BFF pass the relevant message structure to Foundry
+
+If needed later, you can evolve to:
+
+- server-side conversation persistence
+- session IDs mapped to storage
+- transcript retention for analytics or audit
+- summarization of long threads
+
+For now, keep it intentionally light unless compliance or handoff requirements force persistence.
+
+---
+
+**Resource Reuse From The Existing POC**
+
+From the prior discussion, the right reuse path is:
+
+**Keep and repurpose**
+- existing Function App as the BFF
+- existing storage-hosted portal page or current web-hosting approach
+- existing Foundry project and TicketDeflection workflow
+- existing monitoring where it still aligns
+
+**Introduce**
+- APIM as the managed API front door
+- a clean Foundry published application aligned to the Responses-based path
+
+**Retire or stop depending on**
+- Bot Service path for this use case
+- Direct Line token broker behavior
+- Web Chat / Direct Line client integration
+- clone bot resources created only to isolate the login issue
+
+That is a healthy reuse story because it preserves the valuable assets and discards the integration pieces that created the problem.
+
+---
+
+**End-State Architecture In One Picture**
+
+```text
+                           +----------------------+
+                           |   Portal Backend     |
+                           | auth/authz already   |
+                           | handled here         |
+                           +----------+-----------+
+                                      |
+                                      | trusted app experience
+                                      v
++-------------------+       +---------+----------+       +--------------------+
+|   Browser / UI    | ----> |       APIM         | ----> |   Azure Function   |
+| chat widget       | HTTPS | policy + analytics | HTTPS |   BFF / adapter    |
++-------------------+       +---------+----------+       +---------+----------+
+                                                                      |
+                                                                      | managed identity
+                                                                      v
+                                                           +----------+-----------+
+                                                           | Azure AI Foundry     |
+                                                           | TicketDeflection app |
+                                                           | workflow + agents     |
+                                                           +----------------------+
+```
+
+---
+
+**Why This Architecture Is The Right Answer For Your Exact Scenario**
+
+It fits the facts uncovered in the investigation:
+
+- the issue was introduced by the channel path, not the workflow
+- the portal already has its own user authentication model
+- you want a smooth in-portal assistant experience
+- you need an architecture that can survive review, not just a demo
+- you want to reuse what you already provisioned where it still makes sense
+
+It also gives you a clean story to tell stakeholders:
+
+- We are not bypassing security.
+- We are moving the AI call to the correct backend boundary.
+- We are removing the component that introduced the login mismatch.
+- We are putting a governed API layer in front.
+- We are keeping the portal user experience simple and consistent.
+
+---
+
+**Recommended Design Principles For The POC**
+
+```text
+1. Keep the frontend dumb and clean.
+2. Keep the BFF thin, but authoritative.
+3. Keep Foundry private to server-side callers.
+4. Use APIM as the external contract and policy layer.
+5. Avoid reintroducing Bot Service unless the use case truly needs channel-style bot delivery.
+```
+
+---
+
+**Short Stakeholder Narrative**
+
+If you need to explain this to a mixed technical/business audience, this version usually lands well:
+
+“We originally connected the portal chat through the bot channel path, and that path introduced an extra sign-in experience that does not fit our portal use case. The new design removes that mismatch. The portal keeps owning user authentication, APIM becomes the governed API front door, a lightweight backend function securely brokers the request, and Azure AI Foundry continues to power the TicketDeflection intelligence behind the scenes. This gives us a smoother user experience, better security, and a more reviewable enterprise architecture.”
+
+---
+
+If you want, the natural next steps are:
+
+1. I can turn this into a more formal solution architecture document structure with sections like scope, assumptions, logical architecture, security, NFRs, and deployment view.
+2. I can create a second version tailored for ARB review language and wording.
+3. I can produce a deeper sequence diagram for request flow, error flow, and authentication flow in plain text.Continued with AutopilotI’ve completed the architecture write-up; I’m only closing the loop now by marking the task complete as required by the environment.
+
+
+
+Prepared the detailed plain-text technical architecture and closed the task properly with the required completion signal. If you want to continue, I can now convert that architecture into one of these forms:
+
+1. ARB-ready architecture document wording
+2. Executive summary for leadership
+3. Deep-dive sequence diagrams for auth, request flow, and failure flow in plain text
