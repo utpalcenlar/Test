@@ -1,20 +1,4 @@
-Optimizing tool selection...Reviewing the existing local code and config so the request trace matches your actual implementation.
 
-Read [](file:///f%3A/Workspace/web/app.js)
-
-Read [](file:///f%3A/Workspace/web/config.js)
-
-Read [](file:///f%3A/Workspace/token-broker-func/index.js)
-
-Read [](file:///f%3A/Workspace/README.md)
-
-Finding the token broker function structure next so the request trace can mention the right implementation paths.
-
-Read [](file:///f%3A/Workspace/token-broker-func)
-
-Read [](file:///f%3A/Workspace/token-broker-func/directLineToken)
-
-Read [](file:///f%3A/Workspace/token-broker-func/directLineToken/index.js)
 
 Below is the full end-to-end trace from the chat pop-up through the gateway, backend, and on to the TicketDeflection Foundry application. It is written to show both the technical plumbing and the logical behavior at each step.
 
