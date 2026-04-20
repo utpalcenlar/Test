@@ -1,1 +1,1 @@
-
+if(empty(variables('assignedAgentEmail')), null, concat('systemusers(', variables('assignedAgentEmail'), ')'))
