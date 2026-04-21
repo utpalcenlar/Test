@@ -1,1 +1,274 @@
-if(empty(variables('assignedAgentEmail')), null, concat('systemusers(', variables('assignedAgentEmail'), ')'))
+For Rubrik Evaluation questionnaire  given - here is Ai generated call quality summary - just by Audio transcripts + video summary ( no detailed screen ocr) we extracted.
+
+✅ Call QA Summary (Tabular Format) 
+
+# 
+
+QA Question 
+
+Result 
+
+Notes / Rationale 
+
+1 
+
+Advised borrower of delinquency status 
+
+✅ Yes 
+
+Agent informed borrower account was 2 months past due and discussed amounts to bring current 
+
+2 
+
+Attempted to collect the total amount due 
+
+✅ Yes 
+
+Agent stated full reinstatement amount ($5,074.52) 
+
+3 
+
+Obtained borrower’s reason for default 
+
+✅ Yes 
+
+Borrower stated prior unemployment 
+
+4 
+
+Determined borrower’s intentions and occupancy status 
+
+✅ Yes 
+
+Borrower confirmed living in and intending to keep the property 
+
+5 
+
+Obtained borrower’s financial information through BITB Interview 
+
+❌ No 
+
+Only partial financial discussion; no structured BITB 
+
+6 
+
+Advised of applicable loss mitigation options 
+
+⚠️ Partial 
+
+Repayment plan/modification mentioned but not explained 
+
+7 
+
+Advised borrower of possible consequences 
+
+✅ Yes 
+
+Late fees, possible credit reporting, continued collection 
+
+8 
+
+Account notation of borrower contacts 
+
+✅ Yes 
+
+Agent stated they would note the account 
+
+9 
+
+Remarked account appropriately 
+
+✅ Yes 
+
+Account notation referenced appropriately 
+
+10 
+
+Updated borrower’s phone/email/mailing or educated on update process 
+
+❌ No 
+
+Address verified only; no updates or education provided 
+
+11 
+
+Input correct contact RFD codes in DLQ1 
+
+❌ No 
+
+No evidence of RFD coding 
+
+12 
+
+Entered correct target date and payment amount 
+
+✅ Yes 
+
+Amount and date clearly disclosed and authorized 
+
+13 
+
+HELOC call 
+
+❌ No 
+
+First-lien mortgage call with escrow 
+
+14 
+
+FDCPA – MiniMiranda 
+
+✅ Yes 
+
+Proper disclosure provided 
+
+15 
+
+FDCPA – False or misleading representation 
+
+✅ No Violation 
+
+No false or deceptive statements 
+
+16 
+
+Caller verification 
+
+✅ Yes 
+
+Name, address, and account info verified 
+
+17 
+
+State Law – Call recording disclosure 
+
+✅ Yes 
+
+Disclosure given at start of call 
+
+18 
+
+TCPA – Proper coding of revocation 
+
+✅ N/A / Pass 
+
+No revocation expressed 
+
+19 
+
+Collection activity on a bankruptcy loan 
+
+✅ No 
+
+No bankruptcy mentioned or indicated 
+
+20 
+
+Entered BSD code 
+
+❌ No 
+
+No evidence of BSD coding 
+
+21 
+
+Escalation to L2 if required 
+
+✅ N/A / Pass 
+
+No escalation trigger present 
+
+22 
+
+Agent did not avoid the call 
+
+✅ Yes 
+
+Agent remained engaged and resolved issue 
+
+23 
+
+Agent did not abandon the call 
+
+✅ Yes 
+
+No unexplained disconnect or silence 
+
+24 
+
+Call handled professionally 
+
+✅ Yes 
+
+Professional tone and structure maintained 
+
+25 
+
+Polite, courteous, respectful, empathetic 
+
+✅ Yes 
+
+Appropriate tone and empathy shown 
+
+26 
+
+Followed proper hold procedure 
+
+✅ Yes 
+
+Delays explained; no improper holds 
+
+27 
+
+Spoke clearly / no speaking over 
+
+✅ Yes 
+
+Clear communication and turn-taking 
+
+28 
+
+Used good listening skills 
+
+✅ Yes 
+
+Responded appropriately to borrower concerns 
+
+29 
+
+Closed call with client-specific branding 
+
+✅ Yes 
+
+Reference to United Wholesale Mortgage 
+
+30 
+
+Utilized proper transfer procedure if needed 
+
+✅ N/A / Pass 
+
+No transfer required 
+
+ 
+ 
+ Here are results extracted with Foundry Video conentUnderstanding - CU .
+ 
+ 
+00:00:01.800: Multiple application windows open, including a mortgage servicing platform and what appears to be a customer account screen.
+2
+00:00:03.600: Mortgage servicing platform visible, showing account details and payment information.
+3
+00:00:05.400: Customer account screen with payment history and account summary.
+4
+00:00:07.200: Account details, payment breakdown, and customer information visible.
+5
+00:00:09.000: Mortgage servicing platform with highlighted payment and account status.
+6
+00:00:16.200: Pop-up window, possibly for payment processing or account update.
+7
+00:01:08.400: Payment history table visible, showing amounts and dates.
+8
+00:01:34.533 - 00:03:02.733: Multiple screens showing a customer service interface, account details, payment breakdowns, and a pop-up window for payment confirmation. Text includes payment amounts, late fees, and account status information.
+9
+00:03:07.267 - 00:04:35.467: Multiple screens showing a mortgage servicing platform, payment processing windows, and chat communications. Key details include payment amount ($2,476.89), account verification steps, and system prompts for payment authorization.
