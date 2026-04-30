@@ -1,1 +1,20 @@
-https://AIFoundryLab-01.services.ai.azure.com/api/projects/AIFoundryLab-01-Project/applications/TicketDeflection/protocols/activityprotocol?api-version=2025-11-15-preview
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "emailMessage/To": "ubhattacharjee@cenlar.com",
+      "emailMessage/Subject": "Urgent: Critical MI Ticket Created ",
+      "emailMessage/Body": "<p class=\"editor-paragraph\">A new high risk ticket has been created.</p><p class=\"editor-paragraph\">MI Company : [@{items('For_each_2')?['mic_micompany']}]</p><p class=\"editor-paragraph\">Loan Number : [@{outputs('Run_a_prompt')?['body/responsev2/predictionOutput/structuredOutput/Loan_Number']}]</p>",
+      "emailMessage/Importance": "Normal"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+      "connection": "shared_office365",
+      "operationId": "SendEmailV2"
+    }
+  }
+}
+
+
+ActionConditionFailed
+The execution of template action 'Send_an_email_(V2)' is skipped: there are no items to repeat.
