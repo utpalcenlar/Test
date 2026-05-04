@@ -1,20 +1,92 @@
-{
-  "type": "OpenApiConnection",
-  "inputs": {
-    "parameters": {
-      "emailMessage/To": "ubhattacharjee@cenlar.com",
-      "emailMessage/Subject": "Urgent: Critical MI Ticket Created ",
-      "emailMessage/Body": "<p class=\"editor-paragraph\">A new high risk ticket has been created.</p><p class=\"editor-paragraph\">MI Company : [@{items('For_each_2')?['mic_micompany']}]</p><p class=\"editor-paragraph\">Loan Number : [@{outputs('Run_a_prompt')?['body/responsev2/predictionOutput/structuredOutput/Loan_Number']}]</p>",
-      "emailMessage/Importance": "Normal"
-    },
-    "host": {
-      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
-      "connection": "shared_office365",
-      "operationId": "SendEmailV2"
-    }
-  }
-}
+1.Trigger:
+
+When a new email arrives in the shared mailbox micurtailment@Cenlar.com (every 1 minute, includes attachments, monitors a specific folder).
+2.Initialize_variable:
+
+Sets a string variable cleanSubject by removing "RE: ", "FW: ", and "FWD: " from the email subject.
+3.Initialize_variable_1:
+
+Sets a string variable internetId with the email’s internetMessageId.
+4.Initialize_variable_2:
+
+Sets a string variable conversationId with the email’s conversationId.
+5.Html_to_text:
+
+Converts the email body from HTML to plain text.
+6.Run_a_prompt:
+
+Uses AI Builder to analyze the email text and extract:
+Is_Spam (Boolean)
+Loan_Number (String)
+Extracted_Date (String)
+Sentiment (String)
+Financial_Risk (Boolean)
+7.Condition (If):
+
+Checks if the email is an auto-reply, contains certain keywords, or is from specific addresses.
+If true:
+Terminate: Ends the flow as succeeded.
+If false:
+Proceeds to the next step.
+8.Create_item:
+
+Creates a new item in a SharePoint list with details from the email and extracted data.
 
 
-ActionConditionFailed
-The execution of template action 'Send_an_email_(V2)' is skipped: there are no items to repeat.
+Details of actions
+
+1. Trigger: When a new email arrives in a shared mailbox (V2)
+Runs every 1 minute (recurrence).
+Mailbox: micurtailment@Cenlar.com.
+Includes attachments.
+Monitors a specific folder (Inbox, by folderId).
+Splits on each email (processes each message individually).
+2. Initialize_variable
+Type: InitializeVariable.
+Variable Name: cleanSubject (string).
+Value: The subject of the email, with "RE: ", "FW: ", and "FWD: " removed using nested replace functions.
+3. Initialize_variable_1
+Type: InitializeVariable.
+Variable Name: internetId (string).
+Value: The email’s internetMessageId (unique identifier for the message).
+4. Initialize_variable_2
+Type: InitializeVariable.
+Variable Name: conversationId (string).
+Value: The email’s conversationId (identifier for the email thread/conversation).
+5. Html_to_text
+Type: OpenApiConnection (Conversion Service).
+Input: The email body (HTML) is wrapped in a paragraph tag.
+Action: Converts the HTML content of the email body to plain text.
+6. Run_a_prompt
+Type: OpenApiConnection (AI Builder).
+Input: The plain text email body.
+Prompt: Asks AI to extract:
+Is_Spam: Boolean (true if out-of-office, newsletter, or login code).
+Loan_Number: String (null if not found).
+Extracted_Date: String (due date if found, else null).
+Sentiment: String (Routine Request, Frustrated Follow-up, or Escalation/Penalty Threat).
+Financial_Risk: Boolean (true if claim denial/curtailment threats).
+Returns: JSON object with the above keys.
+7. Condition (If)
+Type: If control.
+Expression: Checks if the email matches any of these:
+Subject contains: "out of office", "automatic reply", "security code", "verification code", "(OTP)", "Arch MI Verification Code", "MI Online Security Code".
+Body contains: "if you wish to unsubscribe", "security code", "password reset", "opted-in".
+ToRecipients contains: "micurtailment@cenlar.com".
+From equals: several specific email addresses (e.g., wrlevengood@cenlar.com, mpusdesris1@cenlar.com, etc.).
+If True:
+Terminate: Ends the flow with status "Succeeded".
+If False:
+Proceeds to the next action.
+8. Create_item
+Type: OpenApiConnection (SharePoint).
+Creates a new item in the SharePoint list at https://cenlarfsb.sharepoint.com/sites/DfltMgr/Claims.
+Fields populated:
+Title: cleanSubject variable.
+Status/Value: "New".
+RequesterEmail: Email sender.
+Description: Output from Html_to_text (plain text body).
+ReceivedTime: Email receivedDateTime.
+ConversationId: conversationId variable.
+InternetMessageId: internetId variable.
+Source: "Email".
