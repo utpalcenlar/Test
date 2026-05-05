@@ -1,47 +1,63 @@
-Video quality here is much better so along with Audio transcript, we will get most of the data on screens using Video Indexer. I will run it through today.
 
-Focus on the logic of a solution and  not the solution itself.
+Html to text:
 
-yes. so our goal is to develop logic to get those 30+ rubric questions answered with whatever data we can extract from audio+video , correct.
+Under 'Run Result' tab (note: I do not see the subject here):
 
-The 2nd mockup video you posted (HPC mockup ) is good one as it has Director and Alvaria screens  . Along with audio transcript, OCR scrapping on these frames can be useful to answer few questions related to data on screens. 
+body:
+Classification: Confidential/ Proprietary
 
-so the video quality was so good that with a simple .mp4 1024p conversion, CU ( content understanding) could handle the audio+video analysis,   without need of upfront Video Indexer task.
- 
-Along with usual audio script answers , here are few questions it answered with video:
-1.loan_number
-     YES - The loan number in the audio matches the one on the Director screen.
- 
-   rfd_codes
-      yes - The Director screen shows response and reason codes, indicating RFD codes are likely input.
- 
-2.Director
-YES - The Director screen is open and used throughout the main call segments.
- 
-3.Alvaria
-YES - The Alvaria screen is open at the start and during call wrap-up.
- 
-4. total_amount
-YES - The total amounts discussed in the audio match those displayed on the Director screen.
- 
-5.call_disclosure
-yes - The required call recording disclosure is visible and provided at the start of the call.
- 
-6. mini_miranda
-yes (partial) - The Mini-Miranda disclosure is visible and partially read at the start of the call, but not repeated in later segments.
- 
-7. Remarked
-yes - The Director screen is used for account remarking, but explicit new remarks are not confirmed in the transcript.
- 
-8. AcctNotaion
-yes - The Director screen is visible and typically includes account notations, though explicit new notations are not confirmed in the transcript.
- 
-so a good experiment with this video.
+Claim denied.
+ Test email
+
+Loan number 12883773
 
 
+Classification: Confidential/ Proprietary on 05/05/2026 16:17Z
 
-I am currently trying to find a solution to hide pii in a video, however there doesn’t seem to be a solid solution to do so. The current options on the market will blackout the screen, which doesn’t really help us. Audio we can censor pii no problem but video seems to be difficult
+in 'Run a Prompt' action
+under 'run result'
+Input:
+Input text :
+(Summary):
+You are a mortgage servicing risk analyst. Read the email text below. Extract the requested data and return it ONLY as a valid JSON object. Do not include any markdown formatting, backticks, or extra words. Keys to use: "Is_Spam": (Boolean. True if it is an out-of-office, newsletter, or login code). "Loan_Number": (String. If none found, write null). "Extracted_Date": (String. If a specific due date is mentioned, extract it. If not, write null). "Sentiment": (String. Choose from 'Routine Request', 'Frustrated Follow-up', or 'Escalation/Penalty Threat'). "Financial_Risk": (Boolean. True if there are threats of claim denial or curtailment, otherwise false). Email Text to analyze: <html><head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="Generator" content="Microsoft Word 15 (filtered medium)"><style> <!-- @font-face {font-family:"Cambria Math"} @font-face {font-family:Aptos} p.MsoNormal, li.MsoNormal, div.MsoNormal {margin:0in; font-size:12.0pt; font-family:"Aptos",sans-serif} span.EmailStyle17 {font-family:"Aptos",sans-serif; color:windowtext} .MsoChpDefault {} @page WordSection1 {margin:1.0in 1.0in 1.0in 1.0in} div.WordSection1 {} --> </style></head><body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word"><p align="Left" style="font-family:Calibri; font-size:11pt; color:#0000FF; margin:5pt; font-style:normal; font-weight:normal; text-decoration:none">Classification: Confidential/ Proprietary<br></p><br><div><div class="WordSection1"><p class="MsoNormal"><span lang="EN-IN">Claim denied.</span></p><p class="MsoNormal"><span lang="EN-IN">&nbsp;</span></p><p class="MsoNormal"><span lang="EN-IN">Test email</span></p><p class="MsoNormal"><span lang="EN-IN">Loan number 12883773</span></p></div></div><br><p align="Left" style="font-family:Calibri; font-size:11pt; color:#0000FF; margin:5pt; font-style:normal; font-weight:normal; text-decoration:none">Classification: Confidential/ Proprietary on 05/05/2026 16:17Z<br></p></body></html>
+Outputs:
+(Summary):
+Outcome
+Negative
+Model used
+gpt-41-mini-2025-04-14
+Prompt tokens
+1939
+Completion tokens
+2
 
-Team , any progress on the solution for call quality ?
- 
-I am not sure if we are able to pin point/finalize  a solution. This would be concerning.
+
+Action 'Parse_JSON' failed: The 'content' property of actions of type 'ParseJson' must be valid JSON. The provided value cannot be parsed: 'Error parsing NaN value. Path '', line 1, position 1.'.
+
+When  I clicked the 'Show raw input' in Parse Json action, this is what i see:
+{
+    "content": "Negative",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "Is_Spam": {
+                "type": "boolean"
+            },
+            "Loan_Number": {
+                "type": "string"
+            },
+            "Extracted_Date": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "Sentiment": {
+                "type": "string"
+            },
+            "Financial_Risk": {
+                "type": "boolean"
+            }
+        }
+    }
+}
