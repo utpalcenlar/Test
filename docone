@@ -1,92 +1,47 @@
-1.Trigger:
+Video quality here is much better so along with Audio transcript, we will get most of the data on screens using Video Indexer. I will run it through today.
 
-When a new email arrives in the shared mailbox micurtailment@Cenlar.com (every 1 minute, includes attachments, monitors a specific folder).
-2.Initialize_variable:
+Focus on the logic of a solution and  not the solution itself.
 
-Sets a string variable cleanSubject by removing "RE: ", "FW: ", and "FWD: " from the email subject.
-3.Initialize_variable_1:
+yes. so our goal is to develop logic to get those 30+ rubric questions answered with whatever data we can extract from audio+video , correct.
 
-Sets a string variable internetId with the email’s internetMessageId.
-4.Initialize_variable_2:
+The 2nd mockup video you posted (HPC mockup ) is good one as it has Director and Alvaria screens  . Along with audio transcript, OCR scrapping on these frames can be useful to answer few questions related to data on screens. 
 
-Sets a string variable conversationId with the email’s conversationId.
-5.Html_to_text:
+so the video quality was so good that with a simple .mp4 1024p conversion, CU ( content understanding) could handle the audio+video analysis,   without need of upfront Video Indexer task.
+ 
+Along with usual audio script answers , here are few questions it answered with video:
+1.loan_number
+     YES - The loan number in the audio matches the one on the Director screen.
+ 
+   rfd_codes
+      yes - The Director screen shows response and reason codes, indicating RFD codes are likely input.
+ 
+2.Director
+YES - The Director screen is open and used throughout the main call segments.
+ 
+3.Alvaria
+YES - The Alvaria screen is open at the start and during call wrap-up.
+ 
+4. total_amount
+YES - The total amounts discussed in the audio match those displayed on the Director screen.
+ 
+5.call_disclosure
+yes - The required call recording disclosure is visible and provided at the start of the call.
+ 
+6. mini_miranda
+yes (partial) - The Mini-Miranda disclosure is visible and partially read at the start of the call, but not repeated in later segments.
+ 
+7. Remarked
+yes - The Director screen is used for account remarking, but explicit new remarks are not confirmed in the transcript.
+ 
+8. AcctNotaion
+yes - The Director screen is visible and typically includes account notations, though explicit new notations are not confirmed in the transcript.
+ 
+so a good experiment with this video.
 
-Converts the email body from HTML to plain text.
-6.Run_a_prompt:
-
-Uses AI Builder to analyze the email text and extract:
-Is_Spam (Boolean)
-Loan_Number (String)
-Extracted_Date (String)
-Sentiment (String)
-Financial_Risk (Boolean)
-7.Condition (If):
-
-Checks if the email is an auto-reply, contains certain keywords, or is from specific addresses.
-If true:
-Terminate: Ends the flow as succeeded.
-If false:
-Proceeds to the next step.
-8.Create_item:
-
-Creates a new item in a SharePoint list with details from the email and extracted data.
 
 
-Details of actions
+I am currently trying to find a solution to hide pii in a video, however there doesn’t seem to be a solid solution to do so. The current options on the market will blackout the screen, which doesn’t really help us. Audio we can censor pii no problem but video seems to be difficult
 
-1. Trigger: When a new email arrives in a shared mailbox (V2)
-Runs every 1 minute (recurrence).
-Mailbox: micurtailment@Cenlar.com.
-Includes attachments.
-Monitors a specific folder (Inbox, by folderId).
-Splits on each email (processes each message individually).
-2. Initialize_variable
-Type: InitializeVariable.
-Variable Name: cleanSubject (string).
-Value: The subject of the email, with "RE: ", "FW: ", and "FWD: " removed using nested replace functions.
-3. Initialize_variable_1
-Type: InitializeVariable.
-Variable Name: internetId (string).
-Value: The email’s internetMessageId (unique identifier for the message).
-4. Initialize_variable_2
-Type: InitializeVariable.
-Variable Name: conversationId (string).
-Value: The email’s conversationId (identifier for the email thread/conversation).
-5. Html_to_text
-Type: OpenApiConnection (Conversion Service).
-Input: The email body (HTML) is wrapped in a paragraph tag.
-Action: Converts the HTML content of the email body to plain text.
-6. Run_a_prompt
-Type: OpenApiConnection (AI Builder).
-Input: The plain text email body.
-Prompt: Asks AI to extract:
-Is_Spam: Boolean (true if out-of-office, newsletter, or login code).
-Loan_Number: String (null if not found).
-Extracted_Date: String (due date if found, else null).
-Sentiment: String (Routine Request, Frustrated Follow-up, or Escalation/Penalty Threat).
-Financial_Risk: Boolean (true if claim denial/curtailment threats).
-Returns: JSON object with the above keys.
-7. Condition (If)
-Type: If control.
-Expression: Checks if the email matches any of these:
-Subject contains: "out of office", "automatic reply", "security code", "verification code", "(OTP)", "Arch MI Verification Code", "MI Online Security Code".
-Body contains: "if you wish to unsubscribe", "security code", "password reset", "opted-in".
-ToRecipients contains: "micurtailment@cenlar.com".
-From equals: several specific email addresses (e.g., wrlevengood@cenlar.com, mpusdesris1@cenlar.com, etc.).
-If True:
-Terminate: Ends the flow with status "Succeeded".
-If False:
-Proceeds to the next action.
-8. Create_item
-Type: OpenApiConnection (SharePoint).
-Creates a new item in the SharePoint list at https://cenlarfsb.sharepoint.com/sites/DfltMgr/Claims.
-Fields populated:
-Title: cleanSubject variable.
-Status/Value: "New".
-RequesterEmail: Email sender.
-Description: Output from Html_to_text (plain text body).
-ReceivedTime: Email receivedDateTime.
-ConversationId: conversationId variable.
-InternetMessageId: internetId variable.
-Source: "Email".
+Team , any progress on the solution for call quality ?
+ 
+I am not sure if we are able to pin point/finalize  a solution. This would be concerning.
