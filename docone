@@ -1,92 +1,17 @@
-Good evening! It is just past 8:20 PM here in Bangalore, and this is the perfect
-way to wrap up my day. We have successfully debugged the flow and have a
-concrete, foolproof fix.
-
-Here is the exact, step-by-step email/message you can send to Jennifer tomorrow
-morning. It explains the "why" so she understands the architecture, and gives
-her precise instructions to fix her flow safely.
-
-Subject: Quick fixes for the AI Triage Flow!
-
-Hi Jennifer,
-
-Great job getting the AI Builder integrated! I ran a deep-dive test on the flow
-today and found out why the sentiment and urgency weren't being captured
-correctly.
-
-It turns out the Run a prompt action was accidentally using Microsoft's default
-"AI sentiment" system prompt. Because of that, the AI was ignoring our custom
-instructions and just returning the word "Negative," which broke the data
-mapping. We also need to add a quick "Unpacking" step so SharePoint can actually
-read the AI's data.
-
-Here is the step-by-step guide to swap this out and get it working perfectly:
-
-Step 1: Delete the incorrect AI action
-
-1.  Open your flow in Edit mode.
-2.  Find your Run a prompt action, click the three dots (...), and select
-    Delete. (Don't worry if the steps below it show an error temporarily).
-
-Step 2: Add the correct Custom Prompt
-
-1.  Click the + icon directly below your Html to text step.
-2.  Search for Run a prompt and add the AI Builder action.
-3.  In the parameters on the left, click the Prompt dropdown.
-4.  Look under your custom/shared prompts and select MI Triage Extractor Prompt.
-5.  An EmailBody box will appear. Click inside it, click the dynamic content
-    lightning bolt, and select The plain text content (the green icon from the
-    Html to Text step). Note: Make sure you use this plain text, not the raw
-    Outlook Body!
-
-Step 3: Unpack the AI Data (Parse JSON)
-
-Now we have to translate the AI's output into usable variables.
-
-1.  Click the + icon right below your new Run a prompt action.
-2.  Search for and add Parse JSON (Data Operation).
-3.  Content: Click the lightning bolt and select Response (or Text) from the new
-    Run a prompt step.
-4.  Schema: Click the "Generate from sample" button, paste the exact block of
-    code below, and click Done:
-
-{
-  "Is_Spam": false,
-  "Loan_Number": "123456",
-  "Extracted_Date": "null",
-  "Sentiment": "Routine Request",
-  "Financial_Risk": false
-}
-
-(Crucial tweak: Once generated, look at the schema code. Change the "type" for
-Loan_Number and Extracted_Date from "string" to ["string", "null"] so the flow
-doesn't crash if the AI leaves them blank).
-
-Step 4: Upgrade your Spam Condition
-
-The AI is now doing the spam filtering for us, so we can delete the old
-hardcoded rules!
-
-1.  Go to your Condition box (Step 7).
-2.  Delete all those old rules (Subject contains out of office, etc.).
-3.  Replace it with one single rule: Is_Spam (from your new Parse JSON step) is
-    equal to true (use the fx expression tab to type the word true).
-
-Step 5: Map the Data to SharePoint
-
-Finally, let's plug the AI's data into your ticket!
-
-1.  Open your SharePoint Create_item action.
-2.  Map Loan Number, Sentiment, and Due Date to the new dynamic variables
-    popping out of your Parse JSON step.
-3.  For the Priority column, instead of choosing 'Normal', click the fx
-    (Expression) icon and paste this exact formula to auto-flag high-risk
-    tickets: if(outputs('Parse_JSON')?['body/Financial_Risk'], 'Critical',
-    'Routine')
-
-Hit Save and give it a test run with a dummy "Urgent" email. Let me know if you
-run into any snags!
-
-She should be able to follow this perfectly. You caught a major mapping error,
-fixed a schema strictness bug, and finalized the architecture. Excellent
-collaboration today!
+Architecture Components
+•	Azure Blob Storage (Source): Stores source files- Videos in containers.
+Data Ingestion: RPA to be used to search for recent calls / loans and interface with Verint system to get latest videos, if needed, convert to required format (.mp4)  and upload them to Azure Blob storage.
+ 
+•	Content Understanding Service (AI model): Pretrained Analyzers ( uses speech / vison / Video Indexer -all built in Foundry ) for Video Processing . Uses GenAI prompts to extract data from audio Transcript and Video frames with OCR.
+ 
+•	Python Service or a Python Function App / Orchestration layer : 
+              -  The backend that uses azure-storage-blob to read data,
+- Calls Content Understanding service ,
+- Gets .json results and fills the Rubric DB ( Azure CosmosDB )  to store results . 
+ 
+             Data Visualization :
+- A front-end web portal will be developed to search/view/list latest calls and the quality parameters ( Rubric attributes) for those calls – Interfacing with CosmosDB.
+                            - As next phase this data can be used to build a RAG chatbot to get insights of these calls.
+ 
+•	Azure Key Vault: Stores credentials securely for connecting the Python application to storage/ CosmosDB/ Content Understanding and other end points
+•	Azure Active Directory (Entra ID): Manages secure access for the Python application.
