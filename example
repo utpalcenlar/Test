@@ -1,118 +1,29 @@
-2026-06-19T15:33:01   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
-2026-06-19T15:33:01   [Verbose]   [HostMonitor] Worker status: ID=dbe38b9a-a0eb-4c75-a24b-bde3922ff789, Latency=1ms
-2026-06-19T15:33:01   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,0,0,0), AvgCpuLoad=0, MaxCpuLoad=0
-2026-06-19T15:33:01   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,1,1,1), AvgCpuLoad=1, MaxCpuLoad=1
-2026-06-19T15:33:01   [Verbose]   [HostMonitor] Host aggregate CPU load 1
-2026-06-19T15:33:01   [Information]   Executing StatusCodeResult, setting HTTP status code 200
-2026-06-19T15:33:01   [Information]   Request [472cb5d9-026a-46bb-a540-a6fdfea34eb8] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
-x-ms-version:REDACTED
-DataServiceVersion:REDACTED
-Accept:application/json;odata=minimalmetadata
-x-ms-client-request-id:472cb5d9-026a-46bb-a540-a6fdfea34eb8
-x-ms-return-client-request-id:true
-User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
-x-ms-date:REDACTED
-Authorization:REDACTED
-client assembly: Azure.Data.Tables
-2026-06-19T15:33:01   [Information]   Response [472cb5d9-026a-46bb-a540-a6fdfea34eb8] 200 OK (00.0s)
-Cache-Control:no-cache
-Transfer-Encoding:chunked
-x-ms-request-id:0c30395c-3002-006b-6800-00ec4b000000
-x-ms-client-request-id:472cb5d9-026a-46bb-a540-a6fdfea34eb8
-x-ms-version:REDACTED
-X-Content-Type-Options:REDACTED
-Date:Fri, 19 Jun 2026 15:33:00 GMT
-Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
-
-2026-06-19T15:33:01   [Information]   Request [607eac18-f917-4384-99b0-68cce4eb9c3a] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
-x-ms-version:REDACTED
-DataServiceVersion:REDACTED
-If-Match:W/"datetime'2026-06-19T15%3A32%3A50.9288996Z'"
-Accept:application/json
-Content-Type:application/json
-x-ms-client-request-id:607eac18-f917-4384-99b0-68cce4eb9c3a
-x-ms-return-client-request-id:true
-User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
-x-ms-date:REDACTED
-Authorization:REDACTED
-client assembly: Azure.Data.Tables
-2026-06-19T15:33:01   [Information]   Response [607eac18-f917-4384-99b0-68cce4eb9c3a] 204 No Content (00.0s)
-Cache-Control:no-cache
-ETag:W/"datetime'2026-06-19T15%3A33%3A00.9568244Z'"
-x-ms-request-id:0c30395f-3002-006b-6900-00ec4b000000
-x-ms-client-request-id:607eac18-f917-4384-99b0-68cce4eb9c3a
-x-ms-version:REDACTED
-X-Content-Type-Options:REDACTED
-Date:Fri, 19 Jun 2026 15:33:00 GMT
-Content-Length:0
-
-2026-06-19T15:33:01   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
-2026-06-19T15:33:01   [Information]   Request [b7f67bbd-b89f-4930-a389-cbbc7fd826af] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
-x-ms-version:REDACTED
-DataServiceVersion:REDACTED
-If-Match:W/"datetime'2026-06-19T15%3A32%3A50.9338914Z'"
-Accept:application/json
-Content-Type:application/json
-x-ms-client-request-id:b7f67bbd-b89f-4930-a389-cbbc7fd826af
-x-ms-return-client-request-id:true
-User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
-x-ms-date:REDACTED
-Authorization:REDACTED
-client assembly: Azure.Data.Tables
-2026-06-19T15:33:01   [Information]   Response [b7f67bbd-b89f-4930-a389-cbbc7fd826af] 204 No Content (00.0s)
-Cache-Control:no-cache
-ETag:W/"datetime'2026-06-19T15%3A33%3A00.9628148Z'"
-x-ms-request-id:0c303960-3002-006b-6a00-00ec4b000000
-x-ms-client-request-id:b7f67bbd-b89f-4930-a389-cbbc7fd826af
-x-ms-version:REDACTED
-X-Content-Type-Options:REDACTED
-Date:Fri, 19 Jun 2026 15:33:00 GMT
-Content-Length:0
-
-2026-06-19T15:33:01   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
-2026-06-19T15:33:01   [Information]   Request [9146faff-65fb-43b4-9803-acbc6cba7cae] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
-x-ms-version:REDACTED
-DataServiceVersion:REDACTED
-If-Match:W/"datetime'2026-06-19T15%3A32%3A50.9398822Z'"
-Accept:application/json
-Content-Type:application/json
-x-ms-client-request-id:9146faff-65fb-43b4-9803-acbc6cba7cae
-x-ms-return-client-request-id:true
-User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
-x-ms-date:REDACTED
-Authorization:REDACTED
-client assembly: Azure.Data.Tables
-2026-06-19T15:33:01   [Information]   Response [9146faff-65fb-43b4-9803-acbc6cba7cae] 204 No Content (00.0s)
-Cache-Control:no-cache
-ETag:W/"datetime'2026-06-19T15%3A33%3A00.967807Z'"
-x-ms-request-id:0c303961-3002-006b-6b00-00ec4b000000
-x-ms-client-request-id:9146faff-65fb-43b4-9803-acbc6cba7cae
-x-ms-version:REDACTED
-X-Content-Type-Options:REDACTED
-Date:Fri, 19 Jun 2026 15:33:00 GMT
-Content-Length:0
-
-2026-06-19T15:33:01   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
-2026-06-19T15:33:01   [Information]   Request [ff03f0dd-6829-4212-b8aa-88af513bec23] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
-x-ms-version:REDACTED
-DataServiceVersion:REDACTED
-If-Match:W/"datetime'2026-06-19T15%3A32%3A50.9458727Z'"
-Accept:application/json
-Content-Type:application/json
-x-ms-client-request-id:ff03f0dd-6829-4212-b8aa-88af513bec23
-x-ms-return-client-request-id:true
-User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
-x-ms-date:REDACTED
-Authorization:REDACTED
-client assembly: Azure.Data.Tables
-2026-06-19T15:33:01   [Information]   Response [ff03f0dd-6829-4212-b8aa-88af513bec23] 204 No Content (00.0s)
-Cache-Control:no-cache
-ETag:W/"datetime'2026-06-19T15%3A33%3A00.9737972Z'"
-x-ms-request-id:0c303962-3002-006b-6c00-00ec4b000000
-x-ms-client-request-id:ff03f0dd-6829-4212-b8aa-88af513bec23
-x-ms-version:REDACTED
-X-Content-Type-Options:REDACTED
-Date:Fri, 19 Jun 2026 15:33:00 GMT
-Content-Length:0
-
-2026-06-19T15:33:01   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T15:45:36   [Error]   Error processing mocktestfile1.mp4: (PermissionDenied) The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
+Code: PermissionDenied
+Message: The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
+Traceback (most recent call last):
+  File "/home/site/wwwroot/function_app.py", line 121, in process_video_activity
+    poller = cu_client.begin_analyze(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_patch.py", line 221, in begin_analyze
+    poller = super().begin_analyze(  # pyright: ignore[reportCallIssue]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_operations/_operations.py", line 807, in begin_analyze
+    raw_result = self._analyze_initial(
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_operations/_operations.py", line 632, in _analyze_initial
+    map_error(
+  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/exceptions.py", line 163, in map_error
+    raise error
+azure.core.exceptions.ClientAuthenticationError: (PermissionDenied) The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
+Code: PermissionDenied
+Message: The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
+2026-06-19T15:45:36   [Error]   Executed 'Functions.process_video_activity' (Failed, Id=cf1c110a-6b09-409d-89d0-78020ac728af, Duration=1908ms)
+2026-06-19T15:45:36   [Error]   eb8c19249f3948b8a9d38d180ba5108b: Function 'process_video_activity (Activity)' failed with an error. Reason: System.Exception
+. IsReplay: False. State: Failed. RuntimeStatus: Failed. HubName: funccallmonitoring. AppName: funccallmonitoring. SlotName: Production. ExtensionVersion: 3.12.3. SequenceNumber: 7. TaskEventId: 0
