@@ -1,0 +1,581 @@
+function_app.py
+
+import os
+import logging
+from datetime import datetime, timedelta, timezone
+from urllib.parse import quote
+
+import azure.functions as func
+import azure.durable_functions as df
+
+# Azure SDKs
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
+from azure.ai.contentunderstanding import ContentUnderstandingClient
+from azure.ai.contentunderstanding.models import AnalysisInput
+from azure.cosmos import CosmosClient
+
+# Initialize the Durable Function App
+app = df.DFApp(http_auth_level=func.AuthLevel.FUNCTION)
+
+# ---------------------------------------------------------
+# HELPER FUNCTIONS 
+# ---------------------------------------------------------
+def flatten_field_value(field_obj):
+    if not isinstance(field_obj, dict):
+        return field_obj
+    ftype = field_obj.get("type")
+    if ftype == "string": return field_obj.get("valueString")
+    if ftype == "number": return field_obj.get("valueNumber")
+    if ftype == "boolean": return field_obj.get("valueBoolean")
+    if ftype == "array": return field_obj.get("valueArray")
+    if ftype == "object": return field_obj.get("valueObject")
+    for k, v in field_obj.items():
+        if isinstance(k, str) and k.startswith("value"):
+            return v
+    return field_obj
+
+def strip_key_frames_from_markdown(markdown: str) -> str:
+    if not markdown: return markdown
+    marker = "\n\nKey Frames"
+    if marker in markdown:
+        return markdown.split(marker, 1)[0].rstrip()
+    return markdown
+
+# ---------------------------------------------------------
+# 1. STARTER: Triggered when an .mp4 is uploaded
+# ---------------------------------------------------------
+@app.blob_trigger(arg_name="myblob", path="labhrdocs/{name}", connection="BlobStorageConnection")
+@app.durable_client_input(client_name="client")
+async def blob_trigger_starter(myblob: func.InputStream, client: df.DurableOrchestrationClient):
+    # myblob.name will be "labhrdocs/filename.mp4"
+    if not myblob.name.lower().endswith('.mp4'):
+        logging.info(f"Ignoring non-mp4 file: {myblob.name}")
+        return
+
+    blob_name = myblob.name.split('/', 1)[-1] 
+    
+    input_data = {
+        "blob_name": blob_name,
+        "blob_uri": myblob.uri
+    }
+    
+    instance_id = await client.start_new("video_orchestrator", client_input=input_data)
+    logging.info(f"Started orchestration with ID = '{instance_id}' for blob '{blob_name}'.")
+
+# ---------------------------------------------------------
+# 2. ORCHESTRATOR: Manages the workflow
+# ---------------------------------------------------------
+@app.orchestration_trigger(context_name="context")
+def video_orchestrator(context: df.DurableOrchestrationContext):
+    input_data = context.get_input()
+    
+    # Call the activity to process the video. 
+    result = yield context.call_activity("process_video_activity", input_data)
+    return result
+
+# ---------------------------------------------------------
+# 3. ACTIVITY: The Heavy Lifting
+# ---------------------------------------------------------
+@app.activity_trigger(input_name="inputData")
+def process_video_activity(inputData: dict):
+    blob_name = inputData['blob_name']
+    video_blob_url = inputData['blob_uri']
+    logging.info(f"Activity started for blob: {blob_name}")
+    
+    # Environment Variables
+    storage_account = os.environ["AZURE_STORAGE_ACCOUNT_NAME"]
+    container_name = os.environ.get("AZURE_BLOB_CONTAINER", "labhrdocs")
+    ai_endpoint = os.environ["AZURE_AI_ENDPOINT"]
+    analyzer_id = os.environ["ANALYZER_ID"]
+    api_version = os.environ.get("CU_API_VERSION", "2024-12-01-preview")
+    
+    cosmos_endpoint = os.environ["COSMOS_ENDPOINT"]
+    cosmos_db_name = os.environ.get("COSMOS_DB", "testDB1")
+    cosmos_container_name = os.environ.get("COSMOS_CONTAINER", "CallQuality")
+    
+    # Use DefaultAzureCredential (Uses Managed Identity in Cloud, Azure CLI/VS Code locally)
+    cred = DefaultAzureCredential()
+    
+    try:
+        # --- A. GENERATE SAS URL FOR AI CONTENT UNDERSTANDING ---
+        account_url = f"https://{storage_account}.blob.core.windows.net"
+        blob_service = BlobServiceClient(account_url=account_url, credential=cred)
+        
+        start = datetime.now(timezone.utc) - timedelta(minutes=5)
+        expiry = datetime.now(timezone.utc) + timedelta(minutes=60)
+        delegation_key = blob_service.get_user_delegation_key(start, expiry)
+        
+        sas_token = generate_blob_sas(
+            account_name=storage_account,
+            container_name=container_name,
+            blob_name=blob_name,
+            user_delegation_key=delegation_key,
+            permission=BlobSasPermissions(read=True),
+            expiry=expiry,
+            start=start,
+        )
+        sas_url = f"{account_url}/{container_name}/{quote(blob_name, safe='/~')}?{sas_token}"
+        logging.info("SAS URL generated.")
+
+        # --- B. PROCESS VIA AI CONTENT UNDERSTANDING ---
+        cu_client = ContentUnderstandingClient(endpoint=ai_endpoint, credential=cred, api_version=api_version)
+        poller = cu_client.begin_analyze(
+            analyzer_id=analyzer_id,
+            inputs=[AnalysisInput(url=sas_url)],
+        )
+        
+        logging.info("Waiting for AI Content Understanding to finish processing...")
+        result = poller.result() 
+        wrapper = result.as_dict()
+        logging.info("AI Processing Complete.")
+
+        # --- C. SAVE TO COSMOS DB ---
+        cosmos_client = CosmosClient(cosmos_endpoint, credential=cred)
+        database = cosmos_client.get_database_client(cosmos_db_name)
+        cosmos_container = database.get_container_client(cosmos_container_name)
+        
+        # Extract payload
+        payload = wrapper.get("result", wrapper) if "result" in wrapper else wrapper
+        contents = payload.get("contents", [])
+        
+        docs_upserted = 0
+        for idx, c in enumerate(contents):
+            fields = c.get("fields", {})
+            flat_fields = {k: flatten_field_value(v) for k, v in fields.items()}
+            markdown = strip_key_frames_from_markdown(c.get("markdown") or "")
+
+            doc = {
+                "id": f"{blob_name}_{idx}",
+                "originalFileName": blob_name,
+                "contentIndex": idx,
+                "analysisId": wrapper.get("id"),
+                "status": wrapper.get("status"),
+                "analyzerId": payload.get("analyzerId"),
+                "createdAt": payload.get("createdAt"),
+                "blobName": blob_name,
+                "videoBlobUrl": video_blob_url,
+                "storageAccount": storage_account,
+                "containerName": container_name,
+                "markdown": markdown,
+            }
+            doc.update(flat_fields)
+            
+            cosmos_container.upsert_item(doc)
+            docs_upserted += 1
+
+        logging.info(f"Successfully upserted {docs_upserted} records to Cosmos DB.")
+        return f"Success: {blob_name} processed."
+
+
+        local.setting.json:
+        {
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "PROJECT_ENDPOINT1": "https://aifoundry-test-01.services.ai.azure.com/api/projects/Nitin-TestProject",
+    "PROJECT_CONNECTION_STRING1": "https://aifoundry-test-01.services.ai.azure.com/api/projects/Nitin-TestProject",
+    "PROJECT_CONNECTION_STRING": "https://aifoundrylab-01.services.ai.azure.com/api/projects/AIFoundryLab-01-Project",
+    "MODEL_DEPLOYMENT_NAME": "gpt-4.1",
+    "AZURE_AI_ENDPOINT": "https://aifoundrylab-01.services.ai.azure.com/",
+    "AZURE_AI_KEY": "EyFqn4Qb5ZZ5o8NS9fnNI7LGRfjXqH6xvb1zCU0XQ0arQqcETxCKJQQJ99BLACYeBjFXJ3w3AAAAACOGHwu5",
+    "ANALYZER_ID": "CallQuality1",
+    "AZURE_STORAGE_CONNECTION_STRING": "https://aiinnovationstoragedev.blob.core.windows.net",
+    "AZURE_STORAGE_ACCOUNT_NAME": "aiinnovationstoragedev",
+    "AZURE_STORAGE_ACCOUNT_KEY": "",
+    "AZURE_BLOB_CONTAINER": "labhrdocs",
+    "AZURE_STG_TABLE": "cootable",
+    "COSMOS_ENDPOINT": "https://cenlarcosmosdbpoc.documents.azure.com:443/",
+    "COSMOS_KEY": "KpiGvHNjh9eHWppmrDrBZTn3mb5cuWWbaDjjQHQ62Q5fi1zRqqOpazrpSuA2f3f1C3UqZrn8KEpJACDbgH74hQ=="
+  }
+}
+
+requirement.txt:
+# Uncomment to enable Azure Monitor OpenTelemetry
+# Ref: aka.ms/functions-azure-monitor-python 
+# azure-monitor-opentelemetry 
+
+azure-functions
+azure-functions-durable
+azure-identity
+azure-storage-blob
+azure-ai-contentunderstanding
+azure-cosmos 
+python-dotenv
+
+this is the log metrics:
+2026-06-19T15:15:27   [Information]   Request [cdcd5de2-78a0-4581-9d3c-be38b04cceec] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:cdcd5de2-78a0-4581-9d3c-be38b04cceec
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:27 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T15:15:27   [Information]   Response [cdcd5de2-78a0-4581-9d3c-be38b04cceec] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:d8c6a77f-d003-0073-0afe-ff332c000000
+x-ms-client-request-id:cdcd5de2-78a0-4581-9d3c-be38b04cceec
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 15:15:26 GMT
+Content-Type:application/xml
+
+2026-06-19T15:15:32   [Information]   Request [1c317241-baca-4759-b228-fcd5685189d4] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-03/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:1c317241-baca-4759-b228-fcd5685189d4
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:32 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T15:15:32   [Information]   Response [1c317241-baca-4759-b228-fcd5685189d4] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:d8c6ad65-d003-0073-30fe-ff332c000000
+x-ms-client-request-id:1c317241-baca-4759-b228-fcd5685189d4
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 15:15:31 GMT
+Content-Type:application/xml
+
+2026-06-19T15:15:33   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T15:15:33   [Verbose]   [HostMonitor] Worker status: ID=0900ea66-9ccd-45cb-9d1f-5c131225388c, Latency=1ms
+2026-06-19T15:15:33   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,0,0,0), AvgCpuLoad=0, MaxCpuLoad=0
+2026-06-19T15:15:33   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,0,1,1), AvgCpuLoad=1, MaxCpuLoad=1
+2026-06-19T15:15:33   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T15:15:33   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T15:15:34   [Verbose]   There are currently 0 orchestration(s) and 0 activities loaded into memory on this worker
+2026-06-19T15:15:35   [Information]   Request [c81e74f6-aeb4-40d1-a16e-b7fc07ceba25] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:c81e74f6-aeb4-40d1-a16e-b7fc07ceba25
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:35   [Information]   Response [c81e74f6-aeb4-40d1-a16e-b7fc07ceba25] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:8e2830d4-4002-00c8-69fe-ff898e000000
+x-ms-client-request-id:c81e74f6-aeb4-40d1-a16e-b7fc07ceba25
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:34 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T15:15:35   [Information]   Request [0946fb2b-523e-4f6e-864c-94f1bbf966e7] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A25.1568458Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:0946fb2b-523e-4f6e-864c-94f1bbf966e7
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:35   [Information]   Response [0946fb2b-523e-4f6e-864c-94f1bbf966e7] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A35.1807727Z'"
+x-ms-request-id:8e2830d7-4002-00c8-6afe-ff898e000000
+x-ms-client-request-id:0946fb2b-523e-4f6e-864c-94f1bbf966e7
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:34 GMT
+Content-Length:0
+
+2026-06-19T15:15:35   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T15:15:35   [Information]   Request [85e1e69d-60d7-4e7c-acb4-0944382f35fc] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A25.1618378Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:85e1e69d-60d7-4e7c-acb4-0944382f35fc
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:35   [Information]   Response [85e1e69d-60d7-4e7c-acb4-0944382f35fc] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A35.1857646Z'"
+x-ms-request-id:8e2830d8-4002-00c8-6bfe-ff898e000000
+x-ms-client-request-id:85e1e69d-60d7-4e7c-acb4-0944382f35fc
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:34 GMT
+Content-Length:0
+
+2026-06-19T15:15:35   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T15:15:35   [Information]   Request [deb1d963-1f95-4ba1-a707-fe5b5dacb2f4] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A25.1668298Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:deb1d963-1f95-4ba1-a707-fe5b5dacb2f4
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:35   [Information]   Response [deb1d963-1f95-4ba1-a707-fe5b5dacb2f4] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A35.1907567Z'"
+x-ms-request-id:8e2830d9-4002-00c8-6cfe-ff898e000000
+x-ms-client-request-id:deb1d963-1f95-4ba1-a707-fe5b5dacb2f4
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:34 GMT
+Content-Length:0
+
+2026-06-19T15:15:35   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T15:15:35   [Information]   Request [eef6b51d-beab-40a7-80ea-18e1ebc507ad] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A25.1718217Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:eef6b51d-beab-40a7-80ea-18e1ebc507ad
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:35   [Information]   Response [eef6b51d-beab-40a7-80ea-18e1ebc507ad] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A35.1957487Z'"
+x-ms-request-id:8e2830da-4002-00c8-6dfe-ff898e000000
+x-ms-client-request-id:eef6b51d-beab-40a7-80ea-18e1ebc507ad
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:34 GMT
+Content-Length:0
+
+2026-06-19T15:15:35   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T15:15:37   [Information]   Request [c5c325c7-4b6c-402a-a8db-1034b88e734c] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-00/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:c5c325c7-4b6c-402a-a8db-1034b88e734c
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:37 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T15:15:37   [Information]   Response [c5c325c7-4b6c-402a-a8db-1034b88e734c] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:d8c6b45e-d003-0073-58fe-ff332c000000
+x-ms-client-request-id:c5c325c7-4b6c-402a-a8db-1034b88e734c
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 15:15:36 GMT
+Content-Type:application/xml
+
+2026-06-19T15:15:38   [Information]   Request [49ae64e8-117f-4326-82c2-2af418a467c7] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/host?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:49ae64e8-117f-4326-82c2-2af418a467c7
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:37 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T15:15:38   [Information]   Response [49ae64e8-117f-4326-82c2-2af418a467c7] 200 OK (00.0s)
+ETag:"0x8DECE14B937E52A"
+x-ms-request-id:626bca92-a01e-0046-3efe-ff5f38000000
+x-ms-client-request-id:49ae64e8-117f-4326-82c2-2af418a467c7
+x-ms-version:2024-11-04
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+Date:Fri, 19 Jun 2026 15:15:36 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 15:09:13 GMT
+
+2026-06-19T15:15:39   [Verbose]   funccallmonitoring-applease: Starting app lease renewal with token 3320c211-0000-0000-0000-000000000000
+2026-06-19T15:15:39   [Information]   Request [3ca3d68b-5c4c-486a-8b1b-0055cb858a8d] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/funccallmonitoring-applease?comp=lease&restype=container
+x-ms-lease-action:renew
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:3ca3d68b-5c4c-486a-8b1b-0055cb858a8d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:39 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T15:15:39   [Information]   Response [3ca3d68b-5c4c-486a-8b1b-0055cb858a8d] 200 OK (00.0s)
+ETag:"0x8DECE10DD3DE605"
+x-ms-request-id:02a47fba-801e-0023-03fe-fff17c000000
+x-ms-client-request-id:3ca3d68b-5c4c-486a-8b1b-0055cb858a8d
+x-ms-version:2026-02-06
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+Date:Fri, 19 Jun 2026 15:15:38 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 14:41:35 GMT
+
+2026-06-19T15:15:39   [Verbose]   funccallmonitoring-applease: app lease renewal with token 3320c211-0000-0000-0000-000000000000 succeeded
+2026-06-19T15:15:40   [Information]   Request [a82b2ca3-1db8-4d84-b2ad-0a6037def7c1] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-01/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:a82b2ca3-1db8-4d84-b2ad-0a6037def7c1
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:40 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T15:15:40   [Information]   Response [a82b2ca3-1db8-4d84-b2ad-0a6037def7c1] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:d8c6b81a-d003-0073-6afe-ff332c000000
+x-ms-client-request-id:a82b2ca3-1db8-4d84-b2ad-0a6037def7c1
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 15:15:39 GMT
+Content-Type:application/xml
+
+2026-06-19T15:15:41   [Information]   Request [13dfb077-5aa0-4a78-924a-e2f1f55843f2] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/?comp=list&maxresults=1
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:13dfb077-5aa0-4a78-924a-e2f1f55843f2
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 15:15:40 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T15:15:41   [Information]   Response [13dfb077-5aa0-4a78-924a-e2f1f55843f2] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:626bcf46-a01e-0046-7dfe-ff5f38000000
+x-ms-client-request-id:13dfb077-5aa0-4a78-924a-e2f1f55843f2
+x-ms-version:2024-11-04
+Date:Fri, 19 Jun 2026 15:15:40 GMT
+Content-Type:application/xml
+
+2026-06-19T15:15:43   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T15:15:43   [Verbose]   [HostMonitor] Worker status: ID=0900ea66-9ccd-45cb-9d1f-5c131225388c, Latency=1ms
+2026-06-19T15:15:43   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,1,0,0), AvgCpuLoad=0.2, MaxCpuLoad=1
+2026-06-19T15:15:43   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(2,1,1,1,1), AvgCpuLoad=1, MaxCpuLoad=2
+2026-06-19T15:15:43   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T15:15:43   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T15:15:45   [Information]   Request [ed0b4022-34ae-41f7-85db-21b33d92b432] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:ed0b4022-34ae-41f7-85db-21b33d92b432
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:45   [Information]   Response [ed0b4022-34ae-41f7-85db-21b33d92b432] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:8e2831ab-4002-00c8-79fe-ff898e000000
+x-ms-client-request-id:ed0b4022-34ae-41f7-85db-21b33d92b432
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:44 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T15:15:45   [Information]   Request [94b0887b-6cb3-45b8-907a-b1cb54c304d5] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A35.1807727Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:94b0887b-6cb3-45b8-907a-b1cb54c304d5
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:45   [Information]   Response [94b0887b-6cb3-45b8-907a-b1cb54c304d5] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A45.2047076Z'"
+x-ms-request-id:8e2831ac-4002-00c8-7afe-ff898e000000
+x-ms-client-request-id:94b0887b-6cb3-45b8-907a-b1cb54c304d5
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:44 GMT
+Content-Length:0
+
+2026-06-19T15:15:45   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T15:15:45   [Information]   Request [0a668a07-9272-4e30-b0c8-a53b598dc0e8] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A35.1857646Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:0a668a07-9272-4e30-b0c8-a53b598dc0e8
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:45   [Information]   Response [0a668a07-9272-4e30-b0c8-a53b598dc0e8] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A45.2097Z'"
+x-ms-request-id:8e2831ad-4002-00c8-7bfe-ff898e000000
+x-ms-client-request-id:0a668a07-9272-4e30-b0c8-a53b598dc0e8
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:44 GMT
+Content-Length:0
+
+2026-06-19T15:15:45   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T15:15:45   [Information]   Request [3fb8b873-ff94-48c6-9ca4-d644267e7859] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A35.1907567Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:3fb8b873-ff94-48c6-9ca4-d644267e7859
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:45   [Information]   Response [3fb8b873-ff94-48c6-9ca4-d644267e7859] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A45.2156904Z'"
+x-ms-request-id:8e2831af-4002-00c8-7dfe-ff898e000000
+x-ms-client-request-id:3fb8b873-ff94-48c6-9ca4-d644267e7859
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:44 GMT
+Content-Length:0
+
+2026-06-19T15:15:45   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T15:15:45   [Information]   Request [b9d4c125-0e72-4faa-9cbd-c5e10e94a304] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T15%3A15%3A35.1957487Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:b9d4c125-0e72-4faa-9cbd-c5e10e94a304
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T15:15:45   [Information]   Response [b9d4c125-0e72-4faa-9cbd-c5e10e94a304] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T15%3A15%3A45.2196841Z'"
+x-ms-request-id:8e2831b0-4002-00c8-7efe-ff898e000000
+x-ms-client-request-id:b9d4c125-0e72-4faa-9cbd-c5e10e94a304
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 15:15:44 GMT
+Content-Length:0
+
+2026-06-19T15:15:45   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+
+    except Exception as e:
+        logging.error(f"Error processing {blob_name}: {str(e)}", exc_info=True)
+        raise e
