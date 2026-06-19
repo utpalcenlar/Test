@@ -1,6 +1,1502 @@
-# --- C. SAVE TO COSMOS DB ---
-        cosmos_client = CosmosClient(cosmos_endpoint, credential=cred)
+2026-06-19T17:27:45   [Information]   Request [f316ca69-59cb-4981-86b0-34fc9081a3d4] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:f316ca69-59cb-4981-86b0-34fc9081a3d4
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:45   [Information]   Response [f316ca69-59cb-4981-86b0-34fc9081a3d4] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:87f72452-6002-00df-2a10-002085000000
+x-ms-client-request-id:f316ca69-59cb-4981-86b0-34fc9081a3d4
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:45 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
 
-# --- C. SAVE TO COSMOS DB ---
-        cosmos_key = os.environ["COSMOS_KEY"]
-        cosmos_client = CosmosClient(cosmos_endpoint, credential=cosmos_key)
+2026-06-19T17:27:45   [Information]   Request [b667c232-f6d0-4f10-9ce8-322e35890c01] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A35.4351555Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:b667c232-f6d0-4f10-9ce8-322e35890c01
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:45   [Information]   Response [b667c232-f6d0-4f10-9ce8-322e35890c01] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A45.4700674Z'"
+x-ms-request-id:87f72454-6002-00df-2b10-002085000000
+x-ms-client-request-id:b667c232-f6d0-4f10-9ce8-322e35890c01
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:45 GMT
+Content-Length:0
+
+2026-06-19T17:27:45   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T17:27:45   [Information]   Request [057d5de0-cd08-49c9-abc4-e0572589b6bf] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A35.4421442Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:057d5de0-cd08-49c9-abc4-e0572589b6bf
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:45   [Information]   Response [057d5de0-cd08-49c9-abc4-e0572589b6bf] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A45.4760569Z'"
+x-ms-request-id:87f72456-6002-00df-2d10-002085000000
+x-ms-client-request-id:057d5de0-cd08-49c9-abc4-e0572589b6bf
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:45 GMT
+Content-Length:0
+
+2026-06-19T17:27:45   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T17:27:45   [Information]   Request [fa956cb9-81a0-4444-a1c5-28410f3b6956] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A35.4471365Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:fa956cb9-81a0-4444-a1c5-28410f3b6956
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:45   [Information]   Response [fa956cb9-81a0-4444-a1c5-28410f3b6956] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A45.4830458Z'"
+x-ms-request-id:87f72457-6002-00df-2e10-002085000000
+x-ms-client-request-id:fa956cb9-81a0-4444-a1c5-28410f3b6956
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:45 GMT
+Content-Length:0
+
+2026-06-19T17:27:45   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T17:27:45   [Information]   Request [0d8d2841-c6fb-4f9e-93c6-0838d0af9229] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A35.4521279Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:0d8d2841-c6fb-4f9e-93c6-0838d0af9229
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:45   [Information]   Response [0d8d2841-c6fb-4f9e-93c6-0838d0af9229] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A45.4900345Z'"
+x-ms-request-id:87f72458-6002-00df-2f10-002085000000
+x-ms-client-request-id:0d8d2841-c6fb-4f9e-93c6-0838d0af9229
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:45 GMT
+Content-Length:0
+
+2026-06-19T17:27:45   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T17:27:47   [Information]   Request [9a200b48-c0c3-49a0-b14d-df4072c37a48] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1700&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:9a200b48-c0c3-49a0-b14d-df4072c37a48
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:46 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:47   [Information]   Request [a40cd6b5-7bf1-4061-bc22-7e6dfea8cd3d] GET https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs?restype=container&comp=list&marker=&maxresults=10000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:a40cd6b5-7bf1-4061-bc22-7e6dfea8cd3d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:46 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:47   [Information]   Response [9a200b48-c0c3-49a0-b14d-df4072c37a48] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154a3a5-901e-00f4-2a10-00a049000000
+x-ms-client-request-id:9a200b48-c0c3-49a0-b14d-df4072c37a48
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:27:46 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:47   [Information]   Response [a40cd6b5-7bf1-4061-bc22-7e6dfea8cd3d] 200 OK (00.0s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919a9e5e-a01e-0018-1b10-00d970000000
+x-ms-client-request-id:a40cd6b5-7bf1-4061-bc22-7e6dfea8cd3d
+x-ms-version:2026-02-06
+Access-Control-Expose-Headers:REDACTED
+Access-Control-Allow-Origin:*
+Date:Fri, 19 Jun 2026 17:27:46 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:47   [Verbose]   Poll for blobs newer than '2026-06-19T17:25:28.000Z' in container 'labhrdocs' with ClientRequestId 'd5c9c534-343c-4d1b-931a-61b64203db29' found 1 blobs in 4 ms. ContinuationToken: False.
+2026-06-19T17:27:47   [Information]   Request [5574a221-14f3-46cf-a43b-1a5f891b728d] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1600&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:5574a221-14f3-46cf-a43b-1a5f891b728d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:46 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:47   [Information]   Request [31e9f1cf-77fd-4ece-9dac-0c84905b59f6] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:31e9f1cf-77fd-4ece-9dac-0c84905b59f6
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:46 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:47   [Information]   Response [31e9f1cf-77fd-4ece-9dac-0c84905b59f6] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C1BA5BEF"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919a9e61-a01e-0018-1c10-00d970000000
+x-ms-client-request-id:31e9f1cf-77fd-4ece-9dac-0c84905b59f6
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:28 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:27:46 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:25:28 GMT
+
+2026-06-19T17:27:47   [Information]   Request [e51df410-2ffc-4f71-88c4-87846e9432a8] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE27C1BA5BEF%22/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:e51df410-2ffc-4f71-88c4-87846e9432a8
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:46 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:47   [Information]   Response [e51df410-2ffc-4f71-88c4-87846e9432a8] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C64C4F6F"
+x-ms-request-id:d35cdad0-e01e-00d1-2a10-000935000000
+x-ms-client-request-id:e51df410-2ffc-4f71-88c4-87846e9432a8
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:35 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:27:46 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:25:35 GMT
+
+2026-06-19T17:27:47   [Verbose]   Blob 'onemoretime.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE27C1BA5BEF"' has already been processed. PollId: 'd5c9c534-343c-4d1b-931a-61b64203db29'. Source: 'ContainerScan'.
+2026-06-19T17:27:47   [Information]   Response [5574a221-14f3-46cf-a43b-1a5f891b728d] 200 OK (00.1s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154a3aa-901e-00f4-2d10-00a049000000
+x-ms-client-request-id:5574a221-14f3-46cf-a43b-1a5f891b728d
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:27:46 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:47   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T17:27:47   [Verbose]   [HostMonitor] Worker status: ID=4c84a450-17c7-4a19-aa6e-7b244b5cf14c, Latency=1ms
+2026-06-19T17:27:47   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,0,0,0), AvgCpuLoad=0, MaxCpuLoad=0
+2026-06-19T17:27:47   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(0,1,2,2,2), AvgCpuLoad=1, MaxCpuLoad=2
+2026-06-19T17:27:47   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T17:27:47   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T17:27:52   [Information]   Request [da1fa26d-a757-47eb-ba1f-0e3d998ecccf] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/host?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:da1fa26d-a757-47eb-ba1f-0e3d998ecccf
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:52 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:52   [Information]   Response [da1fa26d-a757-47eb-ba1f-0e3d998ecccf] 200 OK (00.0s)
+ETag:"0x8DECE27C8CAA19C"
+x-ms-request-id:70214dcb-301e-009f-7410-0027bd000000
+x-ms-client-request-id:da1fa26d-a757-47eb-ba1f-0e3d998ecccf
+x-ms-version:2024-11-04
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+Date:Fri, 19 Jun 2026 17:27:51 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 17:25:40 GMT
+
+2026-06-19T17:27:53   [Information]   Request [b8ec838a-b7e5-48db-ab99-8881c2d40b56] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:b8ec838a-b7e5-48db-ab99-8881c2d40b56
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:52 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:27:53   [Information]   Response [b8ec838a-b7e5-48db-ab99-8881c2d40b56] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f7f81-c003-0040-3510-006c87000000
+x-ms-client-request-id:b8ec838a-b7e5-48db-ab99-8881c2d40b56
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:27:52 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:55   [Information]   Request [8fbfe0fa-07ad-46f6-bd61-55ab4656c717] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:8fbfe0fa-07ad-46f6-bd61-55ab4656c717
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:55   [Information]   Response [8fbfe0fa-07ad-46f6-bd61-55ab4656c717] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:87f72534-6002-00df-4e10-002085000000
+x-ms-client-request-id:8fbfe0fa-07ad-46f6-bd61-55ab4656c717
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:55 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T17:27:55   [Information]   Request [9ec5990b-f3bd-4fbc-a528-8c7d5ea65042] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A45.4700674Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:9ec5990b-f3bd-4fbc-a528-8c7d5ea65042
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:56   [Information]   Response [9ec5990b-f3bd-4fbc-a528-8c7d5ea65042] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A55.5019807Z'"
+x-ms-request-id:87f72536-6002-00df-4f10-002085000000
+x-ms-client-request-id:9ec5990b-f3bd-4fbc-a528-8c7d5ea65042
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:55 GMT
+Content-Length:0
+
+2026-06-19T17:27:56   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T17:27:56   [Information]   Request [d528e910-4c6c-42fe-b676-d723411dd711] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A45.4760569Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:d528e910-4c6c-42fe-b676-d723411dd711
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:56   [Information]   Response [d528e910-4c6c-42fe-b676-d723411dd711] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A55.5079712Z'"
+x-ms-request-id:87f72537-6002-00df-5010-002085000000
+x-ms-client-request-id:d528e910-4c6c-42fe-b676-d723411dd711
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:55 GMT
+Content-Length:0
+
+2026-06-19T17:27:56   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T17:27:56   [Information]   Request [55a1f8c8-cb5e-4078-a03e-618c291c7e13] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A45.4830458Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:55a1f8c8-cb5e-4078-a03e-618c291c7e13
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:56   [Information]   Response [55a1f8c8-cb5e-4078-a03e-618c291c7e13] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A55.5139614Z'"
+x-ms-request-id:87f72538-6002-00df-5110-002085000000
+x-ms-client-request-id:55a1f8c8-cb5e-4078-a03e-618c291c7e13
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:55 GMT
+Content-Length:0
+
+2026-06-19T17:27:56   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T17:27:56   [Information]   Request [8408f831-c7bc-40e7-ba93-978e631206c8] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A45.4900345Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:8408f831-c7bc-40e7-ba93-978e631206c8
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:27:56   [Information]   Response [8408f831-c7bc-40e7-ba93-978e631206c8] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A27%3A55.519952Z'"
+x-ms-request-id:87f72539-6002-00df-5210-002085000000
+x-ms-client-request-id:8408f831-c7bc-40e7-ba93-978e631206c8
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:27:55 GMT
+Content-Length:0
+
+2026-06-19T17:27:56   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T17:27:57   [Information]   Request [bf57bc55-4608-41af-b877-55b94ccb730a] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1700&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:bf57bc55-4608-41af-b877-55b94ccb730a
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:56 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:57   [Information]   Request [cf775f41-14d1-4506-afdf-c3c85388a2aa] GET https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs?restype=container&comp=list&marker=&maxresults=10000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:cf775f41-14d1-4506-afdf-c3c85388a2aa
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:56 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:57   [Information]   Response [bf57bc55-4608-41af-b877-55b94ccb730a] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154b6cb-901e-00f4-7010-00a049000000
+x-ms-client-request-id:bf57bc55-4608-41af-b877-55b94ccb730a
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:27:56 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:57   [Information]   Response [cf775f41-14d1-4506-afdf-c3c85388a2aa] 200 OK (00.0s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919aa71f-a01e-0018-0b10-00d970000000
+x-ms-client-request-id:cf775f41-14d1-4506-afdf-c3c85388a2aa
+x-ms-version:2026-02-06
+Access-Control-Expose-Headers:REDACTED
+Access-Control-Allow-Origin:*
+Date:Fri, 19 Jun 2026 17:27:56 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:57   [Verbose]   Poll for blobs newer than '2026-06-19T17:25:28.000Z' in container 'labhrdocs' with ClientRequestId 'b7e516e5-2758-449d-a104-149e374fc6ab' found 1 blobs in 4 ms. ContinuationToken: False.
+2026-06-19T17:27:57   [Information]   Request [c9e4683a-de0f-49c5-8ac7-901d1d7997e2] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1600&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:c9e4683a-de0f-49c5-8ac7-901d1d7997e2
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:56 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:57   [Information]   Request [20002695-4609-4857-823f-2aa993efb5b6] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:20002695-4609-4857-823f-2aa993efb5b6
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:56 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:57   [Information]   Response [20002695-4609-4857-823f-2aa993efb5b6] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C1BA5BEF"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919aa722-a01e-0018-0d10-00d970000000
+x-ms-client-request-id:20002695-4609-4857-823f-2aa993efb5b6
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:28 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:27:56 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:25:28 GMT
+
+2026-06-19T17:27:57   [Information]   Request [60054970-dcdd-476c-adad-79521071953f] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE27C1BA5BEF%22/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:60054970-dcdd-476c-adad-79521071953f
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:27:56 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:27:57   [Information]   Response [60054970-dcdd-476c-adad-79521071953f] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C64C4F6F"
+x-ms-request-id:d35cf281-e01e-00d1-6310-000935000000
+x-ms-client-request-id:60054970-dcdd-476c-adad-79521071953f
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:35 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:27:56 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:25:35 GMT
+
+2026-06-19T17:27:57   [Verbose]   Blob 'onemoretime.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE27C1BA5BEF"' has already been processed. PollId: 'b7e516e5-2758-449d-a104-149e374fc6ab'. Source: 'ContainerScan'.
+2026-06-19T17:27:57   [Information]   Response [c9e4683a-de0f-49c5-8ac7-901d1d7997e2] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154b6cf-901e-00f4-7310-00a049000000
+x-ms-client-request-id:c9e4683a-de0f-49c5-8ac7-901d1d7997e2
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:27:56 GMT
+Content-Type:application/xml
+
+2026-06-19T17:27:57   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T17:27:57   [Verbose]   [HostMonitor] Worker status: ID=4c84a450-17c7-4a19-aa6e-7b244b5cf14c, Latency=1ms
+2026-06-19T17:27:57   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,1,0,0), AvgCpuLoad=0.2, MaxCpuLoad=1
+2026-06-19T17:27:57   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,1,1,1), AvgCpuLoad=1, MaxCpuLoad=1
+2026-06-19T17:27:57   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T17:27:57   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T17:28:01   [Verbose]   funccallmonitoring-applease: Starting app lease renewal with token 3320c211-0000-0000-0000-000000000000
+2026-06-19T17:28:01   [Information]   Request [242d20c1-c65a-488a-87e4-623f6e8f1a95] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/funccallmonitoring-applease?comp=lease&restype=container
+x-ms-lease-action:renew
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:242d20c1-c65a-488a-87e4-623f6e8f1a95
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:00 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:01   [Information]   Response [242d20c1-c65a-488a-87e4-623f6e8f1a95] 200 OK (00.0s)
+ETag:"0x8DECE10DD3DE605"
+x-ms-request-id:7154be49-901e-00f4-1910-00a049000000
+x-ms-client-request-id:242d20c1-c65a-488a-87e4-623f6e8f1a95
+x-ms-version:2026-02-06
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+Date:Fri, 19 Jun 2026 17:28:00 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 14:41:35 GMT
+
+2026-06-19T17:28:01   [Verbose]   funccallmonitoring-applease: app lease renewal with token 3320c211-0000-0000-0000-000000000000 succeeded
+2026-06-19T17:28:01   [Information]   Request [0a405975-ffd7-4335-ad01-7aa344025e81] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-03/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:0a405975-ffd7-4335-ad01-7aa344025e81
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:01 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:01   [Information]   Response [0a405975-ffd7-4335-ad01-7aa344025e81] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f882b-c003-0040-3610-006c87000000
+x-ms-client-request-id:0a405975-ffd7-4335-ad01-7aa344025e81
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:00 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:01   [Information]   Request [1d2b3ad4-403a-4824-a4ac-04a8f0f0671a] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-00/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:1d2b3ad4-403a-4824-a4ac-04a8f0f0671a
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:01 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:01   [Information]   Response [1d2b3ad4-403a-4824-a4ac-04a8f0f0671a] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f8845-c003-0040-4d10-006c87000000
+x-ms-client-request-id:1d2b3ad4-403a-4824-a4ac-04a8f0f0671a
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:00 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:04   [Information]   Request [7551898d-a1a1-425d-a5df-49c3707a48f7] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/host?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:7551898d-a1a1-425d-a5df-49c3707a48f7
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:04 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:04   [Information]   Response [7551898d-a1a1-425d-a5df-49c3707a48f7] 200 OK (00.0s)
+ETag:"0x8DECE27C8CAA19C"
+x-ms-request-id:70216333-301e-009f-2d10-0027bd000000
+x-ms-client-request-id:7551898d-a1a1-425d-a5df-49c3707a48f7
+x-ms-version:2024-11-04
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+Date:Fri, 19 Jun 2026 17:28:03 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 17:25:40 GMT
+
+2026-06-19T17:28:04   [Information]   Request [7f3436ce-37a0-4513-86a3-3467138fd9c4] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-02/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:7f3436ce-37a0-4513-86a3-3467138fd9c4
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:04 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:04   [Information]   Response [7f3436ce-37a0-4513-86a3-3467138fd9c4] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f8a6e-c003-0040-5610-006c87000000
+x-ms-client-request-id:7f3436ce-37a0-4513-86a3-3467138fd9c4
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:03 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:05   [Information]   Request [ad2f5436-c23e-4c56-93c5-c6d88e37cba1] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/WebJobs.Internal.Blobs.Listener?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:0738b5a8-e569-46a7-aee0-8d8e045bba6b
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:ad2f5436-c23e-4c56-93c5-c6d88e37cba1
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:05 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:05   [Information]   Response [ad2f5436-c23e-4c56-93c5-c6d88e37cba1] 200 OK (00.0s)
+ETag:"0x8DECE1769D6FB81"
+x-ms-request-id:70216631-301e-009f-3110-0027bd000000
+x-ms-client-request-id:ad2f5436-c23e-4c56-93c5-c6d88e37cba1
+x-ms-version:2024-11-04
+x-ms-lease-id:0738b5a8-e569-46a7-aee0-8d8e045bba6b
+Date:Fri, 19 Jun 2026 17:28:04 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 15:28:28 GMT
+
+2026-06-19T17:28:06   [Information]   Request [6356e74b-daaa-466f-9f32-ca116fe2f772] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:6356e74b-daaa-466f-9f32-ca116fe2f772
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:06   [Information]   Response [6356e74b-daaa-466f-9f32-ca116fe2f772] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:87f72768-6002-00df-1010-002085000000
+x-ms-client-request-id:6356e74b-daaa-466f-9f32-ca116fe2f772
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:05 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T17:28:06   [Information]   Request [6bde09a7-ee0d-49e4-bfe8-36ab538d4619] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A55.5019807Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:6bde09a7-ee0d-49e4-bfe8-36ab538d4619
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:06   [Information]   Response [6bde09a7-ee0d-49e4-bfe8-36ab538d4619] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A05.5309019Z'"
+x-ms-request-id:87f7276a-6002-00df-1110-002085000000
+x-ms-client-request-id:6bde09a7-ee0d-49e4-bfe8-36ab538d4619
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:05 GMT
+Content-Length:0
+
+2026-06-19T17:28:06   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T17:28:06   [Information]   Request [c0aa1ecf-be70-430c-8421-2716be362e51] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A55.5079712Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:c0aa1ecf-be70-430c-8421-2716be362e51
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:06   [Verbose]   There are currently 0 orchestration(s) and 0 activities loaded into memory on this worker
+2026-06-19T17:28:06   [Information]   Response [c0aa1ecf-be70-430c-8421-2716be362e51] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A05.5368923Z'"
+x-ms-request-id:87f7276b-6002-00df-1210-002085000000
+x-ms-client-request-id:c0aa1ecf-be70-430c-8421-2716be362e51
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:05 GMT
+Content-Length:0
+
+2026-06-19T17:28:06   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T17:28:06   [Information]   Request [45cf046b-f512-41bc-9d8f-3cb19162f1fd] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A55.5139614Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:45cf046b-f512-41bc-9d8f-3cb19162f1fd
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:06   [Information]   Response [45cf046b-f512-41bc-9d8f-3cb19162f1fd] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A05.5428828Z'"
+x-ms-request-id:87f7276c-6002-00df-1310-002085000000
+x-ms-client-request-id:45cf046b-f512-41bc-9d8f-3cb19162f1fd
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:05 GMT
+Content-Length:0
+
+2026-06-19T17:28:06   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T17:28:06   [Information]   Request [ed7003b4-b37d-46ec-82df-8eb61204de8b] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A27%3A55.519952Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:ed7003b4-b37d-46ec-82df-8eb61204de8b
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:06   [Information]   Response [ed7003b4-b37d-46ec-82df-8eb61204de8b] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A05.5488733Z'"
+x-ms-request-id:87f7276d-6002-00df-1410-002085000000
+x-ms-client-request-id:ed7003b4-b37d-46ec-82df-8eb61204de8b
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:05 GMT
+Content-Length:0
+
+2026-06-19T17:28:06   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T17:28:07   [Information]   Request [e31b3b6c-c878-4c72-baac-e245d18e9560] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1700&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:e31b3b6c-c878-4c72-baac-e245d18e9560
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:06 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:07   [Information]   Request [360b32f6-0f12-4333-9746-44dc3e16c26c] GET https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs?restype=container&comp=list&marker=&maxresults=10000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:360b32f6-0f12-4333-9746-44dc3e16c26c
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:06 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:07   [Information]   Response [e31b3b6c-c878-4c72-baac-e245d18e9560] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154cac2-901e-00f4-4c10-00a049000000
+x-ms-client-request-id:e31b3b6c-c878-4c72-baac-e245d18e9560
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:07   [Information]   Response [360b32f6-0f12-4333-9746-44dc3e16c26c] 200 OK (00.0s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ab0d2-a01e-0018-5f10-00d970000000
+x-ms-client-request-id:360b32f6-0f12-4333-9746-44dc3e16c26c
+x-ms-version:2026-02-06
+Access-Control-Expose-Headers:REDACTED
+Access-Control-Allow-Origin:*
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:07   [Verbose]   Poll for blobs newer than '2026-06-19T17:25:28.000Z' in container 'labhrdocs' with ClientRequestId 'efaefff1-46d9-4b74-9b8f-6c82001adef3' found 1 blobs in 4 ms. ContinuationToken: False.
+2026-06-19T17:28:07   [Information]   Request [5e8c2d9a-5787-4183-9465-9693ffa5c260] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1600&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:5e8c2d9a-5787-4183-9465-9693ffa5c260
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:06 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:07   [Information]   Request [dfb20238-4685-43c0-8c3e-d55b9a838f7f] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:dfb20238-4685-43c0-8c3e-d55b9a838f7f
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:06 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:07   [Information]   Response [dfb20238-4685-43c0-8c3e-d55b9a838f7f] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C1BA5BEF"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ab0d5-a01e-0018-6010-00d970000000
+x-ms-client-request-id:dfb20238-4685-43c0-8c3e-d55b9a838f7f
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:28 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:25:28 GMT
+
+2026-06-19T17:28:07   [Information]   Request [3af620d3-200c-4960-acd9-1d7739137ecf] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE27C1BA5BEF%22/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:3af620d3-200c-4960-acd9-1d7739137ecf
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:06 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:07   [Information]   Response [3af620d3-200c-4960-acd9-1d7739137ecf] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C64C4F6F"
+x-ms-request-id:d35d0a44-e01e-00d1-3110-000935000000
+x-ms-client-request-id:3af620d3-200c-4960-acd9-1d7739137ecf
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:35 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:25:35 GMT
+
+2026-06-19T17:28:07   [Verbose]   Blob 'onemoretime.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE27C1BA5BEF"' has already been processed. PollId: 'efaefff1-46d9-4b74-9b8f-6c82001adef3'. Source: 'ContainerScan'.
+2026-06-19T17:28:07   [Information]   Response [5e8c2d9a-5787-4183-9465-9693ffa5c260] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154cac6-901e-00f4-4e10-00a049000000
+x-ms-client-request-id:5e8c2d9a-5787-4183-9465-9693ffa5c260
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:07   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T17:28:07   [Verbose]   [HostMonitor] Worker status: ID=4c84a450-17c7-4a19-aa6e-7b244b5cf14c, Latency=3ms
+2026-06-19T17:28:07   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,0,0,0), AvgCpuLoad=0, MaxCpuLoad=0
+2026-06-19T17:28:07   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,1,2,1), AvgCpuLoad=1, MaxCpuLoad=2
+2026-06-19T17:28:07   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T17:28:07   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T17:28:08   [Information]   Request [a41b8316-ce11-4b72-b8d7-f8396c2bcd8e] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-01/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:a41b8316-ce11-4b72-b8d7-f8396c2bcd8e
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:07 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:08   [Information]   Response [a41b8316-ce11-4b72-b8d7-f8396c2bcd8e] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f8e55-c003-0040-6b10-006c87000000
+x-ms-client-request-id:a41b8316-ce11-4b72-b8d7-f8396c2bcd8e
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:06 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:12   [Information]   Request [2df80dec-afe4-4602-bfdd-e307546247f9] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/?comp=list&maxresults=1
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:2df80dec-afe4-4602-bfdd-e307546247f9
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:12 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:12   [Information]   Response [2df80dec-afe4-4602-bfdd-e307546247f9] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:70217181-301e-009f-2711-0027bd000000
+x-ms-client-request-id:2df80dec-afe4-4602-bfdd-e307546247f9
+x-ms-version:2024-11-04
+Date:Fri, 19 Jun 2026 17:28:11 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:14   [Information]   Request [24679f17-b866-4ac0-ba0f-6bd3a6f32daf] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/azure-webjobs-blobtrigger-funccallmonitoring/messages?numofmessages=9&visibilitytimeout=600
+x-ms-version:2025-11-05
+Accept:application/xml
+x-ms-client-request-id:24679f17-b866-4ac0-ba0f-6bd3a6f32daf
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:14 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:14   [Information]   Response [24679f17-b866-4ac0-ba0f-6bd3a6f32daf] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f93dc-c003-0040-1111-006c87000000
+x-ms-client-request-id:24679f17-b866-4ac0-ba0f-6bd3a6f32daf
+x-ms-version:2025-11-05
+Date:Fri, 19 Jun 2026 17:28:13 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:14   [Verbose]   Poll for function 'blob_trigger_starter' on queue 'azure-webjobs-blobtrigger-funccallmonitoring' with ClientRequestId '24679f17-b866-4ac0-ba0f-6bd3a6f32daf' found 0 messages in 5 ms.
+2026-06-19T17:28:14   [Verbose]   Function 'blob_trigger_starter' will wait 60000 ms before polling queue 'azure-webjobs-blobtrigger-funccallmonitoring'.
+2026-06-19T17:28:16   [Information]   Request [903ab046-cb16-4ef9-9b90-05689c90e62e] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:903ab046-cb16-4ef9-9b90-05689c90e62e
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:16   [Information]   Response [903ab046-cb16-4ef9-9b90-05689c90e62e] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:87f72857-6002-00df-4f11-002085000000
+x-ms-client-request-id:903ab046-cb16-4ef9-9b90-05689c90e62e
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T17:28:16   [Information]   Request [85403840-2d7b-4056-baf7-bb44d7b3a882] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A05.5309019Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:85403840-2d7b-4056-baf7-bb44d7b3a882
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:16   [Information]   Response [85403840-2d7b-4056-baf7-bb44d7b3a882] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A15.5628169Z'"
+x-ms-request-id:87f72859-6002-00df-5011-002085000000
+x-ms-client-request-id:85403840-2d7b-4056-baf7-bb44d7b3a882
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Length:0
+
+2026-06-19T17:28:16   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T17:28:16   [Information]   Request [deadf539-6b43-4afc-9b87-1b902e1641bc] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A05.5368923Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:deadf539-6b43-4afc-9b87-1b902e1641bc
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:16   [Information]   Response [deadf539-6b43-4afc-9b87-1b902e1641bc] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A15.5688062Z'"
+x-ms-request-id:87f7285a-6002-00df-5111-002085000000
+x-ms-client-request-id:deadf539-6b43-4afc-9b87-1b902e1641bc
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Length:0
+
+2026-06-19T17:28:16   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T17:28:16   [Information]   Request [3e526dd8-8705-46a9-8159-8ab57b0d1d6a] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A05.5428828Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:3e526dd8-8705-46a9-8159-8ab57b0d1d6a
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:16   [Information]   Response [3e526dd8-8705-46a9-8159-8ab57b0d1d6a] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A15.5747965Z'"
+x-ms-request-id:87f7285b-6002-00df-5211-002085000000
+x-ms-client-request-id:3e526dd8-8705-46a9-8159-8ab57b0d1d6a
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Length:0
+
+2026-06-19T17:28:16   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T17:28:16   [Information]   Request [437f2e96-8918-43dd-9131-e10031f1052b] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A05.5488733Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:437f2e96-8918-43dd-9131-e10031f1052b
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:16   [Information]   Response [437f2e96-8918-43dd-9131-e10031f1052b] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A15.5817862Z'"
+x-ms-request-id:87f7285c-6002-00df-5311-002085000000
+x-ms-client-request-id:437f2e96-8918-43dd-9131-e10031f1052b
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Length:0
+
+2026-06-19T17:28:16   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T17:28:16   [Information]   Request [e3d172f0-fe38-41ef-b101-da0283ac45fe] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/host?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:e3d172f0-fe38-41ef-b101-da0283ac45fe
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:16   [Information]   Response [e3d172f0-fe38-41ef-b101-da0283ac45fe] 200 OK (00.0s)
+ETag:"0x8DECE27C8CAA19C"
+x-ms-request-id:70217721-301e-009f-3911-0027bd000000
+x-ms-client-request-id:e3d172f0-fe38-41ef-b101-da0283ac45fe
+x-ms-version:2024-11-04
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+Date:Fri, 19 Jun 2026 17:28:15 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 17:25:40 GMT
+
+2026-06-19T17:28:17   [Information]   Request [1a080925-c7fb-4807-97b5-556bb78edbf7] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1700&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:1a080925-c7fb-4807-97b5-556bb78edbf7
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:17   [Information]   Request [a85167f1-cf91-46fc-a671-06ffd5adc125] GET https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs?restype=container&comp=list&marker=&maxresults=10000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:a85167f1-cf91-46fc-a671-06ffd5adc125
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:17   [Information]   Response [1a080925-c7fb-4807-97b5-556bb78edbf7] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154de0d-901e-00f4-2411-00a049000000
+x-ms-client-request-id:1a080925-c7fb-4807-97b5-556bb78edbf7
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:16 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:17   [Information]   Response [a85167f1-cf91-46fc-a671-06ffd5adc125] 200 OK (00.0s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ab980-a01e-0018-6311-00d970000000
+x-ms-client-request-id:a85167f1-cf91-46fc-a671-06ffd5adc125
+x-ms-version:2026-02-06
+Access-Control-Expose-Headers:REDACTED
+Access-Control-Allow-Origin:*
+Date:Fri, 19 Jun 2026 17:28:16 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:17   [Verbose]   Poll for blobs newer than '2026-06-19T17:25:28.000Z' in container 'labhrdocs' with ClientRequestId '335f8dd0-8e3c-4df7-8f33-377f8487685d' found 1 blobs in 4 ms. ContinuationToken: False.
+2026-06-19T17:28:17   [Information]   Request [2352d8fd-b1e5-411e-a22d-973611d93db3] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1600&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:2352d8fd-b1e5-411e-a22d-973611d93db3
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:17   [Information]   Request [8f787479-1560-4bfa-af41-385eab9fe4c8] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:8f787479-1560-4bfa-af41-385eab9fe4c8
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:17   [Information]   Response [8f787479-1560-4bfa-af41-385eab9fe4c8] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C1BA5BEF"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ab982-a01e-0018-6411-00d970000000
+x-ms-client-request-id:8f787479-1560-4bfa-af41-385eab9fe4c8
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:28 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:16 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:25:28 GMT
+
+2026-06-19T17:28:17   [Information]   Request [a28d4ebe-568c-44e6-bccc-b337a6b0ac7e] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE27C1BA5BEF%22/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:a28d4ebe-568c-44e6-bccc-b337a6b0ac7e
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:17   [Information]   Response [a28d4ebe-568c-44e6-bccc-b337a6b0ac7e] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C64C4F6F"
+x-ms-request-id:d35d2324-e01e-00d1-3511-000935000000
+x-ms-client-request-id:a28d4ebe-568c-44e6-bccc-b337a6b0ac7e
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:35 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:16 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:25:35 GMT
+
+2026-06-19T17:28:17   [Verbose]   Blob 'onemoretime.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE27C1BA5BEF"' has already been processed. PollId: '335f8dd0-8e3c-4df7-8f33-377f8487685d'. Source: 'ContainerScan'.
+2026-06-19T17:28:17   [Information]   Response [2352d8fd-b1e5-411e-a22d-973611d93db3] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154de10-901e-00f4-2611-00a049000000
+x-ms-client-request-id:2352d8fd-b1e5-411e-a22d-973611d93db3
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:16 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:17   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T17:28:17   [Verbose]   [HostMonitor] Worker status: ID=4c84a450-17c7-4a19-aa6e-7b244b5cf14c, Latency=3ms
+2026-06-19T17:28:17   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(1,0,0,0,0), AvgCpuLoad=0.2, MaxCpuLoad=1
+2026-06-19T17:28:17   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,1,2,2), AvgCpuLoad=1, MaxCpuLoad=2
+2026-06-19T17:28:17   [Verbose]   [HostMonitor] Host aggregate CPU load 2
+2026-06-19T17:28:17   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T17:28:23   [Information]   Request [5a37a92a-c396-4f93-a49b-bbbf47b2da53] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:5a37a92a-c396-4f93-a49b-bbbf47b2da53
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:22 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:23   [Information]   Response [5a37a92a-c396-4f93-a49b-bbbf47b2da53] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9f9a64-c003-0040-1e11-006c87000000
+x-ms-client-request-id:5a37a92a-c396-4f93-a49b-bbbf47b2da53
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:22 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:26   [Information]   Request [b2f1f821-09d1-41b4-ad11-c18a636efde9] GET https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions()?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json;odata=minimalmetadata
+x-ms-client-request-id:b2f1f821-09d1-41b4-ad11-c18a636efde9
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:26   [Information]   Response [b2f1f821-09d1-41b4-ad11-c18a636efde9] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:87f72977-6002-00df-2711-002085000000
+x-ms-client-request-id:b2f1f821-09d1-41b4-ad11-c18a636efde9
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Type:application/json;odata=minimalmetadata;streaming=true;charset=utf-8
+
+2026-06-19T17:28:26   [Information]   Request [64faa1c2-9b4b-4b7d-8def-95062c2d2b58] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-00')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A15.5628169Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:64faa1c2-9b4b-4b7d-8def-95062c2d2b58
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:26   [Information]   Response [64faa1c2-9b4b-4b7d-8def-95062c2d2b58] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A25.5957311Z'"
+x-ms-request-id:87f72979-6002-00df-2811-002085000000
+x-ms-client-request-id:64faa1c2-9b4b-4b7d-8def-95062c2d2b58
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Length:0
+
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-control-00:  lease renewal with token  succeeded
+2026-06-19T17:28:26   [Information]   Request [45d51c24-c760-42d5-a2aa-281fedba4718] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-01')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A15.5688062Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:45d51c24-c760-42d5-a2aa-281fedba4718
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:26   [Information]   Response [45d51c24-c760-42d5-a2aa-281fedba4718] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A25.6017217Z'"
+x-ms-request-id:87f7297a-6002-00df-2911-002085000000
+x-ms-client-request-id:45d51c24-c760-42d5-a2aa-281fedba4718
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Length:0
+
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-control-01:  lease renewal with token  succeeded
+2026-06-19T17:28:26   [Information]   Request [460c2ef5-566e-4234-9bc2-be4ce30ad578] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-02')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A15.5747965Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:460c2ef5-566e-4234-9bc2-be4ce30ad578
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:26   [Information]   Response [460c2ef5-566e-4234-9bc2-be4ce30ad578] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A25.6107074Z'"
+x-ms-request-id:87f7297b-6002-00df-2a11-002085000000
+x-ms-client-request-id:460c2ef5-566e-4234-9bc2-be4ce30ad578
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Length:0
+
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-control-02:  lease renewal with token  succeeded
+2026-06-19T17:28:26   [Information]   Request [ced3fd18-1301-47f6-9ae7-db3d6ff31426] PUT https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringPartitions(PartitionKey='',RowKey='funccallmonitoring-control-03')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+If-Match:W/"datetime'2026-06-19T17%3A28%3A15.5817862Z'"
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:ced3fd18-1301-47f6-9ae7-db3d6ff31426
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T17:28:26   [Information]   Response [ced3fd18-1301-47f6-9ae7-db3d6ff31426] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T17%3A28%3A25.6156993Z'"
+x-ms-request-id:87f7297c-6002-00df-2b11-002085000000
+x-ms-client-request-id:ced3fd18-1301-47f6-9ae7-db3d6ff31426
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Length:0
+
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-control-03:  lease renewal with token  succeeded
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-applease: Starting app lease renewal with token 3320c211-0000-0000-0000-000000000000
+2026-06-19T17:28:26   [Information]   Request [cad3d7d4-55ea-4c60-aafe-0b93a2c80068] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/funccallmonitoring-applease?comp=lease&restype=container
+x-ms-lease-action:renew
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:cad3d7d4-55ea-4c60-aafe-0b93a2c80068
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:25 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:26   [Information]   Response [cad3d7d4-55ea-4c60-aafe-0b93a2c80068] 200 OK (00.0s)
+ETag:"0x8DECE10DD3DE605"
+x-ms-request-id:7154ee03-901e-00f4-4b11-00a049000000
+x-ms-client-request-id:cad3d7d4-55ea-4c60-aafe-0b93a2c80068
+x-ms-version:2026-02-06
+x-ms-lease-id:3320c211-0000-0000-0000-000000000000
+Date:Fri, 19 Jun 2026 17:28:25 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 14:41:35 GMT
+
+2026-06-19T17:28:26   [Verbose]   funccallmonitoring-applease: app lease renewal with token 3320c211-0000-0000-0000-000000000000 succeeded
+2026-06-19T17:28:27   [Information]   Request [a8f9ccf1-c183-4191-bb24-ebd74ff2047c] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1700&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:a8f9ccf1-c183-4191-bb24-ebd74ff2047c
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:27   [Information]   Request [066f89ff-eb9d-4084-b79e-e7d4801db636] GET https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs?restype=container&comp=list&marker=&maxresults=10000
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:066f89ff-eb9d-4084-b79e-e7d4801db636
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:27   [Information]   Response [a8f9ccf1-c183-4191-bb24-ebd74ff2047c] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154f02e-901e-00f4-1a11-00a049000000
+x-ms-client-request-id:a8f9ccf1-c183-4191-bb24-ebd74ff2047c
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:26 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:27   [Information]   Response [066f89ff-eb9d-4084-b79e-e7d4801db636] 200 OK (00.0s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ac0b4-a01e-0018-6c11-00d970000000
+x-ms-client-request-id:066f89ff-eb9d-4084-b79e-e7d4801db636
+x-ms-version:2026-02-06
+Access-Control-Expose-Headers:REDACTED
+Access-Control-Allow-Origin:*
+Date:Fri, 19 Jun 2026 17:28:26 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:27   [Verbose]   Poll for blobs newer than '2026-06-19T17:25:28.000Z' in container 'labhrdocs' with ClientRequestId '1b900376-79d3-42ba-8de7-7ec0a5196d8c' found 1 blobs in 4 ms. ContinuationToken: False.
+2026-06-19T17:28:27   [Information]   Request [01d280a0-2925-45cd-b06c-a4934f2ff66d] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs?restype=container&comp=list&prefix=blob%2F2026%2F06%2F19%2F1600&include=Metadata
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:01d280a0-2925-45cd-b06c-a4934f2ff66d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:27   [Information]   Request [3567c1d5-9bb5-4560-b2fe-79afb7e44f73] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:3567c1d5-9bb5-4560-b2fe-79afb7e44f73
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:27   [Information]   Response [3567c1d5-9bb5-4560-b2fe-79afb7e44f73] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C1BA5BEF"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:919ac0b8-a01e-0018-6e11-00d970000000
+x-ms-client-request-id:3567c1d5-9bb5-4560-b2fe-79afb7e44f73
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:28 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:26 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:25:28 GMT
+
+2026-06-19T17:28:27   [Information]   Request [97789a46-0469-4c8e-9261-9ca5a5d5aef0] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE27C1BA5BEF%22/labhrdocs/onemoretime.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:97789a46-0469-4c8e-9261-9ca5a5d5aef0
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:27   [Information]   Response [97789a46-0469-4c8e-9261-9ca5a5d5aef0] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE27C64C4F6F"
+x-ms-request-id:d35d3982-e01e-00d1-3611-000935000000
+x-ms-client-request-id:97789a46-0469-4c8e-9261-9ca5a5d5aef0
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:25:35 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:28:26 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:25:35 GMT
+
+2026-06-19T17:28:27   [Verbose]   Blob 'onemoretime.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE27C1BA5BEF"' has already been processed. PollId: '1b900376-79d3-42ba-8de7-7ec0a5196d8c'. Source: 'ContainerScan'.
+2026-06-19T17:28:27   [Information]   Response [01d280a0-2925-45cd-b06c-a4934f2ff66d] 200 OK (00.0s)
+Transfer-Encoding:chunked
+x-ms-request-id:7154f036-901e-00f4-1f11-00a049000000
+x-ms-client-request-id:01d280a0-2925-45cd-b06c-a4934f2ff66d
+x-ms-version:2026-02-06
+Date:Fri, 19 Jun 2026 17:28:26 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:27   [Verbose]   [HostMonitor] Checking worker statuses (Count=1)
+2026-06-19T17:28:27   [Verbose]   [HostMonitor] Worker status: ID=4c84a450-17c7-4a19-aa6e-7b244b5cf14c, Latency=2ms
+2026-06-19T17:28:27   [Verbose]   [HostMonitor] Host process CPU stats (PID 52): History=(0,0,0,0,0), AvgCpuLoad=0, MaxCpuLoad=0
+2026-06-19T17:28:27   [Verbose]   [HostMonitor] Host process CPU stats (PID 27): History=(1,1,1,1,1), AvgCpuLoad=1, MaxCpuLoad=1
+2026-06-19T17:28:27   [Verbose]   [HostMonitor] Host aggregate CPU load 1
+2026-06-19T17:28:27   [Information]   Executing StatusCodeResult, setting HTTP status code 200
+2026-06-19T17:28:28   [Information]   Request [6a5b6412-6be0-4706-9daa-305080175252] PUT https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/locks/funccallmonitoring/host?comp=lease
+x-ms-lease-action:renew
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+x-ms-version:2024-11-04
+Accept:application/xml
+x-ms-client-request-id:6a5b6412-6be0-4706-9daa-305080175252
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.22.1 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:28 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:28:28   [Information]   Response [6a5b6412-6be0-4706-9daa-305080175252] 200 OK (00.0s)
+ETag:"0x8DECE27C8CAA19C"
+x-ms-request-id:7021899e-301e-009f-4111-0027bd000000
+x-ms-client-request-id:6a5b6412-6be0-4706-9daa-305080175252
+x-ms-version:2024-11-04
+x-ms-lease-id:78cfafa1-ec00-b836-4872-e9f140467d35
+Date:Fri, 19 Jun 2026 17:28:27 GMT
+Content-Length:0
+Last-Modified:Fri, 19 Jun 2026 17:25:40 GMT
+
+2026-06-19T17:28:31   [Information]   Request [b1b80aba-cc76-4526-9b27-33b329322ba4] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-03/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:b1b80aba-cc76-4526-9b27-33b329322ba4
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:31 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:31   [Information]   Response [b1b80aba-cc76-4526-9b27-33b329322ba4] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9fa259-c003-0040-0c11-006c87000000
+x-ms-client-request-id:b1b80aba-cc76-4526-9b27-33b329322ba4
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:30 GMT
+Content-Type:application/xml
+
+2026-06-19T17:28:31   [Information]   Request [9c4eea46-1b05-4f17-9cf7-a6559fc1744d] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-00/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:9c4eea46-1b05-4f17-9cf7-a6559fc1744d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:28:31 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T17:28:31   [Information]   Response [9c4eea46-1b05-4f17-9cf7-a6559fc1744d] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:3a9fa277-c003-0040-2a11-006c87000000
+x-ms-client-request-id:9c4eea46-1b05-4f17-9cf7-a6559fc1744d
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 17:28:30 GMT
+Content-Type:application/xml
