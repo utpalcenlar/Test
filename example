@@ -1,29 +1,4 @@
-2026-06-19T15:45:36   [Error]   Error processing mocktestfile1.mp4: (PermissionDenied) The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
-Code: PermissionDenied
-Message: The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
-Traceback (most recent call last):
-  File "/home/site/wwwroot/function_app.py", line 121, in process_video_activity
-    poller = cu_client.begin_analyze(
-             ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_patch.py", line 221, in begin_analyze
-    poller = super().begin_analyze(  # pyright: ignore[reportCallIssue]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/tracing/decorator.py", line 119, in wrapper_use_tracer
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_operations/_operations.py", line 807, in begin_analyze
-    raw_result = self._analyze_initial(
-                 ^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/ai/contentunderstanding/_operations/_operations.py", line 632, in _analyze_initial
-    map_error(
-  File "/home/site/wwwroot/.python_packages/lib/site-packages/azure/core/exceptions.py", line 163, in map_error
-    raise error
-azure.core.exceptions.ClientAuthenticationError: (PermissionDenied) The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
-Code: PermissionDenied
-Message: The principal `cf5450ea-906d-40dd-9bc2-84a5405e9f8a` lacks the required data action `Microsoft.CognitiveServices/accounts/MultiModalIntelligence/analyzers:analyze/action` to perform `POST /contentunderstanding/analyzers/{analyzerId}:analyze` operation.
-2026-06-19T15:45:36   [Error]   Executed 'Functions.process_video_activity' (Failed, Id=cf1c110a-6b09-409d-89d0-78020ac728af, Duration=1908ms)
-2026-06-19T15:45:36   [Error]   eb8c19249f3948b8a9d38d180ba5108b: Function 'process_video_activity (Activity)' failed with an error. Reason: System.Exception
-. IsReplay: False. State: Failed. RuntimeStatus: Failed. HubName: funccallmonitoring. AppName: funccallmonitoring. SlotName: Production. ExtensionVersion: 3.12.3. SequenceNumber: 7. TaskEventId: 0
+from azure.core.credentials import AzureKeyCredential
+# --- B. PROCESS VIA AI CONTENT UNDERSTANDING ---
+        ai_key = os.environ["AZURE_AI_KEY"]
+        cu_client = ContentUnderstandingClient(endpoint=ai_endpoint, credential=AzureKeyCredential(ai_key), api_version=api_version)
