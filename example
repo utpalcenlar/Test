@@ -1,38 +1,122 @@
-# ---------------------------------------------------------
-# 1. STARTER: Triggered when an .mp4 is uploaded
-# ---------------------------------------------------------
-@app.blob_trigger(arg_name="myblob", path="labhrdocs/{name}", connection="BlobStorageConnection")
-@app.durable_client_input(client_name="client")
-async def blob_trigger_starter(myblob: func.InputStream, client: df.DurableOrchestrationClient):
-    logging.warning(f"🚨 1. TRIGGER FIRED! Azure detected a file: {myblob.name}")
-    
-    try:
-        if not myblob.name.lower().endswith('.mp4'):
-            logging.warning(f"🚨 2. FILE REJECTED: Not an .mp4 - {myblob.name}")
-            return
+19T18:07:47   [Warning]   🚨 5. ACTIVITY STARTED! Now processing video: tryagain.mp4
+2026-06-19T18:07:47   [Information]   No environment configuration found.
+2026-06-19T18:07:47   [Information]   c4f4f1f060834210b70d2eb8d9115b03: Appended 4 new events to the history table in 0ms
+2026-06-19T18:07:47   [Information]   ManagedIdentityCredential will use App Service managed identity
+2026-06-19T18:07:47   [Information]   Request [cdb8b834-f69a-433a-a0df-368eaf4289bc] PATCH https://rgd1tsandboxaiapp01846c.table.core.windows.net/funccallmonitoringInstances(PartitionKey='c4f4f1f060834210b70d2eb8d9115b03',RowKey='')?$format=REDACTED
+x-ms-version:REDACTED
+DataServiceVersion:REDACTED
+Accept:application/json
+Content-Type:application/json
+x-ms-client-request-id:cdb8b834-f69a-433a-a0df-368eaf4289bc
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Data.Tables/12.11.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:REDACTED
+Authorization:REDACTED
+client assembly: Azure.Data.Tables
+2026-06-19T18:07:47   [Information]   Request URL: 'http://169.254.129.8:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+Request method: 'GET'
+Request headers:
+    'X-IDENTITY-HEADER': 'REDACTED'
+    'Metadata': 'REDACTED'
+    'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.13 (Linux-6.6.138.1-1.azl3-x86_64-with-glibc2.31)'
+No body was attached to the request
+2026-06-19T18:07:47   [Information]   Response [cdb8b834-f69a-433a-a0df-368eaf4289bc] 204 No Content (00.0s)
+Cache-Control:no-cache
+ETag:W/"datetime'2026-06-19T18%3A07%3A47.0300919Z'"
+x-ms-request-id:8e0035ab-8002-00d7-6016-003a8a000000
+x-ms-client-request-id:cdb8b834-f69a-433a-a0df-368eaf4289bc
+x-ms-version:REDACTED
+X-Content-Type-Options:REDACTED
+Date:Fri, 19 Jun 2026 18:07:46 GMT
+Content-Length:0
 
-        # Extract just the filename
-        blob_name = myblob.name.split('/', 1)[-1] 
-        logging.warning(f"🚨 3. FILE ACCEPTED: {blob_name}. Attempting to start Orchestrator...")
-        
-        input_data = {
-            "blob_name": blob_name,
-            "blob_uri": myblob.uri
-        }
-        
-        instance_id = await client.start_new("video_orchestrator", client_input=input_data)
-        logging.warning(f"🚨 4. ORCHESTRATION SUCCESSFULLY STARTED! Instance ID: {instance_id}")
-        
-    except Exception as e:
-        logging.error(f"🚨 ❌ CRASH IN TRIGGER: {str(e)}", exc_info=True)
-        raise e
+2026-06-19T18:07:47   [Information]   Request [c75f2b58-6999-463f-9259-d86883d22d32] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:c75f2b58-6999-463f-9259-d86883d22d32
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 18:07:47 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T18:07:47   [Information]   c4f4f1f060834210b70d2eb8d9115b03: Updated Instances table and set the runtime status to 'Running'
+2026-06-19T18:07:47   [Information]   c4f4f1f060834210b70d2eb8d9115b03: Deleting [ExecutionStarted] message from funccallmonitoring-control-00
+2026-06-19T18:07:47   [Information]   Request [2e708b36-a5d5-4a2b-aa37-9caf8d6ad91f] DELETE https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-00/messages/cb4bcf6d-bd8f-4898-bd81-85df9ac79ff0?popreceipt=AgAAAAMAAAAAAAAAAOYqOxcA3QE%3D
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:2e708b36-a5d5-4a2b-aa37-9caf8d6ad91f
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 18:07:47 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T18:07:47   [Information]   Response [c75f2b58-6999-463f-9259-d86883d22d32] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:e982d3ae-c003-009b-0c16-00aaba000000
+x-ms-client-request-id:c75f2b58-6999-463f-9259-d86883d22d32
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 18:07:46 GMT
+Content-Type:application/xml
 
+2026-06-19T18:07:47   [Information]   Response [2e708b36-a5d5-4a2b-aa37-9caf8d6ad91f] 204 No Content (00.0s)
+x-ms-request-id:e982d3b2-c003-009b-0f16-00aaba000000
+x-ms-client-request-id:2e708b36-a5d5-4a2b-aa37-9caf8d6ad91f
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 18:07:46 GMT
+Content-Length:0
 
+2026-06-19T18:07:47   [Verbose]   TaskOrchestrationDispatcher-6569a3b66664455a990b7ecb7508b417-0: Finished processing work-item 'c4f4f1f060834210b70d2eb8d9115b03'
+2026-06-19T18:07:47   [Information]   Request [648f4dcd-9ed2-4d05-830f-a5db54cb90e8] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:648f4dcd-9ed2-4d05-830f-a5db54cb90e8
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 18:07:47 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T18:07:47   [Information]   Response [648f4dcd-9ed2-4d05-830f-a5db54cb90e8] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:e982d3cb-c003-009b-2816-00aaba000000
+x-ms-client-request-id:648f4dcd-9ed2-4d05-830f-a5db54cb90e8
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 18:07:46 GMT
+Content-Type:application/xml
 
+2026-06-19T18:07:47   [Information]   Request [b2dd7a55-3934-4ec3-901b-55945551cdef] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-control-00/messages?numofmessages=32&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:b2dd7a55-3934-4ec3-901b-55945551cdef
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 18:07:47 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T18:07:47   [Information]   Response [b2dd7a55-3934-4ec3-901b-55945551cdef] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:e982d3ce-c003-009b-2b16-00aaba000000
+x-ms-client-request-id:b2dd7a55-3934-4ec3-901b-55945551cdef
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 18:07:47 GMT
+Content-Type:application/xml
 
-
-@app.activity_trigger(input_name="inputData")
-def process_video_activity(inputData: dict):
-    blob_name = inputData['blob_name']
-    video_blob_url = inputData['blob_uri']
-    logging.warning(f"🚨 5. ACTIVITY STARTED! Now processing video: {blob_name}")
+2026-06-19T18:07:47   [Information]   Request [b9195c18-2dc2-498f-8b00-c373292fd632] GET https://rgd1tsandboxaiapp01846c.queue.core.windows.net/funccallmonitoring-workitems/messages?numofmessages=1&visibilitytimeout=300
+x-ms-version:2025-05-05
+Accept:application/xml
+x-ms-client-request-id:b9195c18-2dc2-498f-8b00-c373292fd632
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Queues/12.24.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 18:07:47 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Queues
+2026-06-19T18:07:47   [Information]   Response [b9195c18-2dc2-498f-8b00-c373292fd632] 200 OK (00.0s)
+Cache-Control:no-cache
+Transfer-Encoding:chunked
+x-ms-request-id:e982d3ee-c003-009b-4b16-00aaba000000
+x-ms-client-request-id:b9195c18-2dc2-498f-8b00-c373292fd632
+x-ms-version:2025-05-05
+Date:Fri, 19 Jun 2026 18:07:47 GMT
+Content-Type:application/xml
