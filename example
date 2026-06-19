@@ -1,1 +1,177 @@
-Blob 'avi_to_mp4_using_python.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE1F847819D5"' has already been processed. PollId: '21d3159d-7a36-4ce5-b15e-5f8f8285e640'. Source: 'ContainerScan'.
+2026-06-19T17:03:26   [Verbose]   Poll for blobs newer than '0001-01-01T00:00:00.000' in container 'labhrdocs' with ClientRequestId 'ba2362e4-411b-4240-8a07-9e904fd2ad4a' found 1 blobs in 27 ms. ContinuationToken: False.
+2026-06-19T17:03:26   [Information]   Response [df7cdfb1-e81a-4b87-b2f7-a52e30c77fb3] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE1DDFBE3CEB"
+x-ms-request-id:0a4729ea-901e-00e4-590d-006521000000
+x-ms-client-request-id:df7cdfb1-e81a-4b87-b2f7-a52e30c77fb3
+x-ms-version:2026-02-06
+x-ms-meta-StartTime:REDACTED
+x-ms-meta-EndTime:REDACTED
+x-ms-meta-LogType:REDACTED
+x-ms-meta-LogVersion:REDACTED
+x-ms-meta-Opaque1:REDACTED
+x-ms-creation-time:Fri, 19 Jun 2026 16:14:43 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:51899
+Content-Type:application/octet-stream
+Last-Modified:Fri, 19 Jun 2026 16:14:43 GMT
+2026-06-19T17:03:26   [Information]   Request [fb304013-4a2e-484d-af2a-ec9290ce0aa3] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs/blob/2026/06/19/1600/000002.log
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:fb304013-4a2e-484d-af2a-ec9290ce0aa3
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:03:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:03:26   [Information]   Request [0997e028-40fe-4a0b-9116-d416a5e7d5d5] HEAD https://aiinnovationstoragedev.blob.core.windows.net/labhrdocs/brandNew.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:0997e028-40fe-4a0b-9116-d416a5e7d5d5
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:03:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:03:26   [Information]   Response [fb304013-4a2e-484d-af2a-ec9290ce0aa3] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE1EF436DEED"
+x-ms-request-id:0a4729f3-901e-00e4-5e0d-006521000000
+x-ms-client-request-id:fb304013-4a2e-484d-af2a-ec9290ce0aa3
+x-ms-version:2026-02-06
+x-ms-meta-StartTime:REDACTED
+x-ms-meta-EndTime:REDACTED
+x-ms-meta-LogType:REDACTED
+x-ms-meta-LogVersion:REDACTED
+x-ms-meta-Opaque1:REDACTED
+x-ms-creation-time:Fri, 19 Jun 2026 16:22:27 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:36074
+Content-Type:application/octet-stream
+Last-Modified:Fri, 19 Jun 2026 16:22:27 GMT
+2026-06-19T17:03:26   [Information]   Request [eec7819f-ed41-4805-84a4-e079eb81e546] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs/blob/2026/06/19/1600/000003.log
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:eec7819f-ed41-4805-84a4-e079eb81e546
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:03:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:03:26   [Information]   Response [0997e028-40fe-4a0b-9116-d416a5e7d5d5] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE2470FCD404"
+Vary:Origin
+Server:Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+x-ms-request-id:71904eaf-c01e-0098-6a0d-002676000000
+x-ms-client-request-id:0997e028-40fe-4a0b-9116-d416a5e7d5d5
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:01:44 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:2572910
+Content-Type:video/mp4
+Content-MD5:o8IAvb7RYgnpmbldL7R+eA==
+Last-Modified:Fri, 19 Jun 2026 17:01:44 GMT
+2026-06-19T17:03:26   [Information]   Request [5c5648db-bcdb-4684-9922-dee093913e64] HEAD https://rgd1tsandboxaiapp01846c.blob.core.windows.net/azure-webjobs-hosts/blobreceipts/funccallmonitoring/Host.Functions.blob_trigger_starter/%220x8DECE2470FCD404%22/labhrdocs/brandNew.mp4
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:5c5648db-bcdb-4684-9922-dee093913e64
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:03:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:03:26   [Information]   Response [eec7819f-ed41-4805-84a4-e079eb81e546] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE20328AB83A"
+x-ms-request-id:0a4729f6-901e-00e4-610d-006521000000
+x-ms-client-request-id:eec7819f-ed41-4805-84a4-e079eb81e546
+x-ms-version:2026-02-06
+x-ms-meta-StartTime:REDACTED
+x-ms-meta-EndTime:REDACTED
+x-ms-meta-LogType:REDACTED
+x-ms-meta-LogVersion:REDACTED
+x-ms-meta-Opaque1:REDACTED
+x-ms-creation-time:Fri, 19 Jun 2026 16:31:21 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:60433
+Content-Type:application/octet-stream
+Last-Modified:Fri, 19 Jun 2026 16:31:21 GMT
+2026-06-19T17:03:26   [Information]   Request [4e487a72-ba77-4f86-ba1f-f0020bc830b9] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs/blob/2026/06/19/1600/000004.log
+x-ms-version:2026-02-06
+Accept:application/xml
+x-ms-client-request-id:4e487a72-ba77-4f86-ba1f-f0020bc830b9
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.27.0 (.NET 8.0.26; Debian GNU/Linux 11 (bullseye))
+x-ms-date:Fri, 19 Jun 2026 17:03:26 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2026-06-19T17:03:26   [Information]   Response [5c5648db-bcdb-4684-9922-dee093913e64] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE24745FCC6F"
+x-ms-request-id:0a4729fd-901e-00e4-680d-006521000000
+x-ms-client-request-id:5c5648db-bcdb-4684-9922-dee093913e64
+x-ms-version:2026-02-06
+x-ms-tag-count:2
+x-ms-creation-time:Fri, 19 Jun 2026 17:01:49 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:0
+Content-Type:application/octet-stream
+Content-MD5:1B2M2Y8AsgTpgAmY7PhCfg==
+Last-Modified:Fri, 19 Jun 2026 17:01:49 GMT
+2026-06-19T17:03:26   [Information]   Response [4e487a72-ba77-4f86-ba1f-f0020bc830b9] 200 OK (00.0s)
+Accept-Ranges:bytes
+ETag:"0x8DECE20AA43C865"
+x-ms-request-id:0a472a02-901e-00e4-6c0d-006521000000
+x-ms-client-request-id:4e487a72-ba77-4f86-ba1f-f0020bc830b9
+x-ms-version:2026-02-06
+x-ms-meta-StartTime:REDACTED
+x-ms-meta-EndTime:REDACTED
+x-ms-meta-LogType:REDACTED
+x-ms-meta-LogVersion:REDACTED
+x-ms-meta-Opaque1:REDACTED
+x-ms-creation-time:Fri, 19 Jun 2026 16:34:42 GMT
+x-ms-lease-status:unlocked
+x-ms-lease-state:available
+x-ms-blob-type:BlockBlob
+x-ms-server-encrypted:true
+x-ms-access-tier:Hot
+x-ms-access-tier-inferred:true
+Date:Fri, 19 Jun 2026 17:03:25 GMT
+Content-Length:16904
+Content-Type:application/octet-stream
+Last-Modified:Fri, 19 Jun 2026 16:34:42 GMT
+2026-06-19T17:03:26   [Verbose]   Blob 'brandNew.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE2470FCD404"' has already been processed. PollId: 'ba2362e4-411b-4240-8a07-9e904fd2ad4a'. Source: 'ContainerScan'.
+2026-06-19T17:03:26   [Information]   Request [8d5414f0-2d07-4cff-bd6b-9f968b64ed99] GET https://rgd1tsandboxaiapp01846c.blob.core.windows.net/$logs/blob/2026/06/19/1600/000005.log
+x-ms-version:2026-02-06
