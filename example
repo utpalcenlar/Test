@@ -1,4 +1,1 @@
-from azure.core.credentials import AzureKeyCredential
-# --- B. PROCESS VIA AI CONTENT UNDERSTANDING ---
-        ai_key = os.environ["AZURE_AI_KEY"]
-        cu_client = ContentUnderstandingClient(endpoint=ai_endpoint, credential=AzureKeyCredential(ai_key), api_version=api_version)
+Blob 'avi_to_mp4_using_python.mp4' will be skipped for function 'blob_trigger_starter' because this blob with ETag '"0x8DECE1F847819D5"' has already been processed. PollId: '21d3159d-7a36-4ce5-b15e-5f8f8285e640'. Source: 'ContainerScan'.
