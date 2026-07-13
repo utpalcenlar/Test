@@ -1,403 +1,940 @@
-# Simplified Summary of the Document
+part1.ost
+
+function main(workbook: ExcelScript.Workbook) {
+
+  // ══════════════════════════════════════════════════════════════
+  // TASK SUMMARY TAB
+  // ══════════════════════════════════════════════════════════════
+
+  // ── 1. Get the Task Summary sheet ─────────────────────────────
+  const sheet = workbook.getWorksheet("Task Summary");
+  if (!sheet) {
+    console.log("ERROR: Could not find a sheet named 'Task Summary'.");
+    return;
+  }
+
+  const usedRange = sheet.getUsedRange();
+  if (!usedRange) {
+    console.log("ERROR: The Task Summary sheet appears to be empty.");
+    return;
+  }
+
+  const data        = usedRange.getValues();
+  const totalRows   = data.length;
+  const totalCols   = (data[0] as unknown[]).length;
+  const headerRow   = data[0] as string[];
+
+  // ── 2. Locate required columns ────────────────────────────────
+  let taskIdIdx           = -1;
+  let reoFileLocIdx       = -1;
+  let procIdIdx           = -1;
+  let vendorVsCenlarIdx   = -1;
+  let inspServicerIdx     = -1;
+
+  for (let c = 0; c < totalCols; c++) {
+    const h = String(headerRow[c]).trim().toUpperCase();
+    if (h === "TASK_ID")                    taskIdIdx         = c;
+    if (h === "REO_FILE_LOCATION_CODE")     reoFileLocIdx     = c;
+    if (h === "PROC_ID")                    procIdIdx         = c;
+    if (h === "VENDOR VS CENLAR TASK")      vendorVsCenlarIdx = c;
+    if (h === "INSPECTION_SERVICER_ID")     inspServicerIdx   = c;
+  }
+
+  // Validate
+  if (taskIdIdx === -1) {
+    console.log("ERROR: Column 'TASK_ID' not found.");
+    return;
+  }
+  if (reoFileLocIdx === -1) {
+    console.log("ERROR: Column 'REO_FILE_LOCATION_CODE' not found.");
+    return;
+  }
+  if (procIdIdx === -1) {
+    console.log("ERROR: Column 'PROC_ID' not found.");
+    return;
+  }
+  if (vendorVsCenlarIdx === -1) {
+    console.log("ERROR: Column 'VENDOR VS CENLAR TASK' not found.");
+    return;
+  }
+  if (inspServicerIdx === -1) {
+    console.log("ERROR: Column 'INSPECTION_SERVICER_ID' not found.");
+    return;
+  }
+
+  // ── 3. Sort Task Summary by TASK_ID (ascending) ───────────────
+  usedRange.getSort().apply(
+    [{ key: taskIdIdx, ascending: true }],
+    false,
+    true,
+    ExcelScript.SortOrientation.rows
+  );
+
+  const sortedData = usedRange.getValues() as string[][];
+
+  // ── 4. Highlight REO_FILE_LOCATION_CODE column Yellow ─────────
+  const reoColLetter = columnIndexToLetter(reoFileLocIdx);
+  sheet.getRange(`${reoColLetter}1:${reoColLetter}${totalRows}`)
+    .getFormat().getFill().setColor("#FFFF00");
+
+  // ── 5. Rename PROC_ID header → 'Assigned' ─────────────────────
+  sheet.getCell(0, procIdIdx).setValue("Assigned");
+
+  // ── 6. Write Assigned values for VENDOR rows ──────────────────
+  for (let r = 1; r < totalRows; r++) {
+    const vendorVal   = String(sortedData[r][vendorVsCenlarIdx]).trim().toUpperCase();
+    const servicerVal = String(sortedData[r][inspServicerIdx]).trim().toUpperCase();
+
+    if (vendorVal === "VENDOR") {
+      if (servicerVal === "SAFEGUARD") {
+        const cell = sheet.getCell(r, procIdIdx);
+        cell.setNumberFormat("@");
+        cell.setValue("060000");
+      } else if (servicerVal === "MORTGAGE SPECIALISTS INT" || servicerVal === "MCS" ) {
+        const cell = sheet.getCell(r, procIdIdx);
+        cell.setNumberFormat("@");
+        cell.setValue("030000");
+      }
+    }
+  }
+
+  console.log("Task Summary completed successfully.");
+
+  // ══════════════════════════════════════════════════════════════
+  // VIOLATIONS - LIENS TAB
+  // ══════════════════════════════════════════════════════════════
+
+  // ── 1. Get the Violations - Liens sheet ───────────────────────
+  const violSheet = workbook.getWorksheet("Violations - Liens");
+  if (!violSheet) {
+    console.log("ERROR: Could not find a sheet named 'Violations - Liens'.");
+    return;
+  }
+
+  const violUsedRange = violSheet.getUsedRange();
+  if (!violUsedRange) {
+    console.log("ERROR: The Violations - Liens sheet appears to be empty.");
+    return;
+  }
+
+  const violTotalRows = violUsedRange.getValues().length;
+
+  // ── 2. Sort Violations - Liens by TASK_ID (column L = index 11)
+  const taskIdColViol = 11; // Column L (0-based)
+  violUsedRange.getSort().apply(
+    [{ key: taskIdColViol, ascending: true }],
+    false,
+    true,
+    ExcelScript.SortOrientation.rows
+  );
+
+  // ── 3. Rename PROC_ID → 'Assigned' on Violations - Liens ──────
+  const violData = violUsedRange.getValues() as string[][];
+  const violHeaders = violData[0] as string[];
+  let violProcIdIdx = -1;
+  for (let c = 0; c < violHeaders.length; c++) {
+    if (String(violHeaders[c]).trim().toUpperCase() === "PROC_ID") {
+      violProcIdIdx = c;
+      break;
+    }
+  }
+  if (violProcIdIdx === -1) {
+    console.log("ERROR: Column 'PROC_ID' not found on Violations - Liens tab.");
+    return;
+  }
+  violSheet.getCell(0, violProcIdIdx).setValue("Assigned");
+
+  // ── 4. Highlight REO_FILE_LOCATION_CODE column I Yellow ───────
+  const reoColViol = 8; // Column I (0-based)
+  const reoColLetterViol = columnIndexToLetter(reoColViol);
+  violSheet.getRange(`${reoColLetterViol}1:${reoColLetterViol}${violTotalRows}`)
+    .getFormat().getFill().setColor("#FFFF00");
+
+  console.log("Violations - Liens completed successfully.");
+}
+
+// ── Helper: convert 0-based column index to Excel letter(s) ───
+function columnIndexToLetter(index: number): string {
+  let letter = "";
+  let n = index + 1;
+  while (n > 0) {
+    const rem = (n - 1) % 26;
+    letter = String.fromCharCode(65 + rem) + letter;
+    n = Math.floor((n - 1) / 26);
+  }
+  return letter;
+}
+
+
+part2 matrix w post.ost
+
+function main(workbook: ExcelScript.Workbook) {
+
+    // ============================================================
+    // PRE-SALE MATRIX: Task ID → Moder ID
+    // ============================================================
+    const preSaleMatrix: Record<string, string> = {
+        "BADPRP": "LMASX",
+        "CEVALU": "LMVN1",
+        "BNDTRK": "LMGUC",
+        "FEECST": "LMS6S",
+        "FEMAIN": "LMRKX",
+        "PRPVEN": "KMC",
+        "OABIDS": "CPN",
+        "INSPCT": "LMS6H",
+        "PPVALU": "LMVN1",
+        "PRPVIO": "LMSN5",
+        "PRPLEN": "LMSN5",
+        "VACLND": "KMC",
+        "UTLDIS": "JCI",
+        "PRPDMO": "LMSN5",
+        "ALERTT": "KMC",
+        "VIOLTR": "LMSN5",
+        "PRPVIH": "LMSN5",
+        "FCREPP": "CPN",
+        "PREPRP": "HXH",
+        "SSDNTS": "HXH",
+        "SSSAPR": "HXH",
+        "SSSECR": "HXH",
+        "TIMLNE": "CPN",
+        "VIOVPR": "LMSN5",
+        
+        // ADD MORE PRE ENTRIES HERE
+    };
+
+    // ============================================================
+    // POST-SALE MATRIX: Task ID → Moder ID
+    // For Task IDs with conditional logic, handled separately below
+    // ============================================================
+    const postSaleMatrix: Record<string, string> = {
+        "FHAICC": "LMAGX",
+        //"FHAOCC": "LMPHS",
+        "PPVALU": "LMSH4",
+        "PRPVEN": "TLR",
+        "TAXCLM": "LMAGX",
+        "PRPVIH": "LMSN5",
+        "PREPRP": "HXH",
+        "BNDTRK": "LMSH4",
+        "UTLDIS": "JCI",
+        "PRPFUP": "CLOSED",
+        "OABIDS": "CPN",
+        "PRPICF": "LM1NM"
+
+        // ADD MORE POST ENTRIES HERE
+    };
+
+    // ============================================================
+    // COLUMN INDICES (0-based)
+    // ============================================================
+    const colH_vendor = 7;   // 'VENDOR VS CENLAR TASK'
+    const colJ_assigned = 9;   // 'Assigned' (formerly PROC_ID)
+    const colK_prePost = 10;  // 'PRE VS POST INDICATOR'
+    const colL_taskId = 11;  // 'TASK_ID'
+    const colI_reoFile = 8;   // 'REO_FILE_LOCATION_CODE'
+    const colF_state = 5;   // 'PROPERTY_STATE' 
+    
+    //(both tabs only)
+    const colB_termDigit = 1; // 'TERM DIGIT'
+    // ============================================================
+    // TASK SUMMARY TAB
+    // ============================================================
+    const taskSheet = workbook.getWorksheet("Task Summary");
+    if (!taskSheet) {
+        console.log("ERROR: 'Task Summary' sheet not found.");
+        return;
+    }
+
+    const taskData = taskSheet.getUsedRange().getValues() as string[][];
+
+    for (let r = 1; r < taskData.length; r++) {
+        const vendorVal = String(taskData[r][colH_vendor]).trim().toUpperCase();
+        if (vendorVal !== "CENLAR") continue;
+
+        const prePost = String(taskData[r][colK_prePost]).trim().toUpperCase();
+        const taskId = String(taskData[r][colL_taskId]).trim().toUpperCase();
+        const reoCode = String(taskData[r][colI_reoFile]).trim().toUpperCase();
+        const termDigitRaw = String(taskData[r][colB_termDigit]).trim();
+                const termDigit = parseInt(termDigitRaw, 10);
+
+
+        if (prePost === "PRE") {
+            const moderId = preSaleMatrix[taskId];
+            if (moderId) {
+                taskSheet.getCell(r, colJ_assigned).setValue(moderId);
+            } else {
+                console.log(`Task Summary PRE: No Moder ID found for Task ID '${taskId}' at row ${r + 1}`);
+            }
+
+        } else if (prePost === "POST") {
+            let moderId: string | null = null;
+
+            // ── Special case: FHAVAC depends on REO_FILE_CODE ────────
+          if (taskId === "FHAVAC" || taskId === "NOTICC" ) {
+              if (reoCode === "DRR" || reoCode === "PHS" ) {
+                    moderId = "LMPHS";
+                } else if (reoCode === "VID" || reoCode === "HV1") {
+                    moderId = "LMHV1";
+                } else if (reoCode === "1NM") {
+                    moderId = "LM1NM";
+              } else if (reoCode === "ECC" || reoCode === "ACC") {
+                if (!isNaN(termDigit) && termDigit >= 0 && termDigit <= 49) {
+                  moderId = "LMHV1";
+                } else if (termDigit >= 50 && termDigit <= 99) {
+                  moderId = "LMPHS";
+                }
+              }else if (reoCode === "EVI") {
+                  moderId = "LMGUC";
+              } else if (reoCode === "CPN") {
+                moderId = "CPN";
+              }else {
+                    console.log(`Task Summary POST FHAVAC: Unrecognized REO_FILE_CODE '${reoCode}' at row ${r + 1}`);
+                }
+            } else if (taskId === "FHAOCC") {
+
+              if (!isNaN(termDigit) && termDigit >= 0 && termDigit <= 49) {
+                  moderId = "LMGUC";
+              } else if (termDigit >=50 && termDigit <= 99) {
+                   moderId = "LMPHS";
+              }
+
+              } else {
+                // ── Standard POST lookup ──────────────────────────────
+                moderId = postSaleMatrix[taskId] ?? null;
+                if (!moderId) {
+                    console.log(`Task Summary POST: No Moder ID found for Task ID '${taskId}' at row ${r + 1}`);
+                }
+            }
+
+            if (moderId) {
+                taskSheet.getCell(r, colJ_assigned).setValue(moderId);
+            }
+        }
+    }
+
+    // ============================================================
+    // VIOLATIONS - LIENS TAB
+    // ============================================================
+    const violSheet = workbook.getWorksheet("Violations - Liens");
+    if (!violSheet) {
+        console.log("ERROR: 'Violations - Liens' sheet not found.");
+        return;
+    }
+
+    const violData = violSheet.getUsedRange().getValues() as string[][];
+
+    for (let r = 1; r < violData.length; r++) {
+        const state = String(violData[r][colF_state]).trim().toUpperCase();
+        if (state === "NH") continue;
+
+        const prePost = String(violData[r][colK_prePost]).trim().toUpperCase();
+        const taskId = String(violData[r][colL_taskId]).trim().toUpperCase();
+        const reoCode = String(violData[r][colI_reoFile]).trim().toUpperCase();
+
+        if (prePost === "PRE") {
+            const moderId = preSaleMatrix[taskId];
+            if (moderId) {
+                violSheet.getCell(r, colJ_assigned).setValue(moderId);
+            } else {
+                console.log(`Violations-Liens PRE: No Moder ID found for Task ID '${taskId}' at row ${r + 1}`);
+            }
+
+        } else if (prePost === "POST") {
+            let moderId: string | null = null;
+
+            // ── Special cases: PRPVIO and PRPVIH depend on REO_FILE_CODE
+            if (taskId === "PRPVIO") {
+
+                // ── ADDITION: TERM DIGIT LOGIC FOR POST-SALE PRPVIO ──
+                const termDigitRaw = String(violData[r][colB_termDigit]).trim();
+                const termDigit = parseInt(termDigitRaw, 10);
+
+                moderId = "LMSN5";
+                
+            } else if (taskId === "PRPVIH") {
+                if (reoCode === "" || reoCode === "UNDEFINED") {
+                    moderId = "LMSN5";
+                } else {
+                    console.log(`Violations-Liens POST PRPVIH: Unrecognized REO_FILE_CODE '${reoCode}' at row ${r + 1}`);
+                }
+            } else {
+                // ── Standard POST lookup ──────────────────────────────
+                moderId = postSaleMatrix[taskId] ?? null;
+                if (!moderId) {
+                    console.log(`Violations-Liens POST: No Moder ID found for Task ID '${taskId}' at row ${r + 1}`);
+                }
+            }
+
+            if (moderId) {
+                violSheet.getCell(r, colJ_assigned).setValue(moderId);
+            }
+        }
+    }
+
+    console.log("Script 2 completed successfully.");
+}
+
+
+part3 revised.ost:
+function main(workbook: ExcelScript.Workbook) {
+
+    // ── 1. Extract report date from filename ──────────────────────
+    const fileName = workbook.getName();
+    const year = parseInt(fileName.substring(0, 4));
+    const month = parseInt(fileName.substring(4, 6)) - 1;
+    const day = parseInt(fileName.substring(6, 8));
+    const today = new Date(year, month, day);
+    today.setHours(0, 0, 0, 0);
+    const todayTime = today.getTime();
+    console.log(`Report date detected: ${today.toDateString()}`);
+
+    // ── 2. Color code existing tabs ───────────────────────────────
+    const violTabSheet = workbook.getWorksheet("Violations - Liens");
+    if (violTabSheet) violTabSheet.setTabColor("#FF0000"); // Red
+
+    // ══════════════════════════════════════════════════════════════
+    // ASSIGNED TASK SUMMARY SHEET (Yellow tab)
+    // ══════════════════════════════════════════════════════════════
+
+    // ── 3. Create or replace 'Assigned Task Summary' sheet ────────
+    const assignedSheetName = "Assigned Task Summary";
+    const existingAssigned = workbook.getWorksheet(assignedSheetName);
+    if (existingAssigned) existingAssigned.delete();
+    const pivotSheet = workbook.addWorksheet(assignedSheetName);
+    pivotSheet.setTabColor("#FFFF00"); // Yellow
+
+    // ── 4. Get Task Summary data ───────────────────────────────────
+    const taskSheet = workbook.getWorksheet("Task Summary");
+    if (!taskSheet) {
+        console.log("ERROR: 'Task Summary' sheet not found.");
+        return;
+    }
+    const taskUsedRange = taskSheet.getUsedRange();
+    if (!taskUsedRange) {
+        console.log("ERROR: No data found in 'Task Summary' sheet.");
+        return;
+    }
+    const taskLastRow = taskUsedRange.getRowCount();
+    const taskLastCol = taskUsedRange.getColumnCount();
+    const taskLastColLetter = columnIndexToLetter(taskLastCol - 1);
+    const taskDataRange = taskSheet.getRange(`A1:${taskLastColLetter}${taskLastRow}`);
+    console.log(`Task Summary data range: A1:${taskLastColLetter}${taskLastRow}`);
+
+    // ── Normalize 'Assigned' column to remove duplicates caused by spacing/casing ──
+    const taskRawValues = taskUsedRange.getValues() as string[][];
+    const taskHeaderRow = taskRawValues[0];
+    let assignedColIndex = -1;
+    for (let c = 0; c < taskHeaderRow.length; c++) {
+        if (String(taskHeaderRow[c]).trim().toUpperCase() === "ASSIGNED") {
+            assignedColIndex = c;
+            break;
+        }
+    }
+    if (assignedColIndex !== -1) {
+        for (let r = 1; r < taskRawValues.length; r++) {
+            const cell = taskSheet.getCell(r, assignedColIndex);
+            const val = String(taskRawValues[r][assignedColIndex]).trim().toUpperCase();
+            cell.setValue(val);
+        }
+        console.log("Assigned column normalized.");
+    }
+
+    // ── 5. Add label for Task Summary pivot ───────────────────────
+    pivotSheet.getRange("A1").setValue("TASK SUMMARY");
+    pivotSheet.getRange("A1").getFormat().getFont().setBold(true);
+    pivotSheet.getRange("A1").getFormat().getFill().setColor("#FFFF00");
+
+    // ── 6. Create Task Summary pivot table at A3 ──────────────────
+    const taskPivot = pivotSheet.addPivotTable(
+        "TaskSummaryPivot",
+        taskDataRange,
+        pivotSheet.getRange("A3")
+    );
+    taskPivot.addRowHierarchy(taskPivot.getHierarchy("Assigned"));
+    taskPivot.addColumnHierarchy(taskPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+    const taskValueField = taskPivot.addDataHierarchy(taskPivot.getHierarchy("TASK_ID"));
+    taskValueField.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    taskPivot.refresh();
+
+    // ── 7. Apply date highlighting, borders, bold totals ──────────
+    applyDateHighlighting(pivotSheet, taskPivot, todayTime);
+    const taskPivotRange = taskPivot.getLayout().getRange();
+    const taskPivotRowCount = taskPivotRange.getRowCount();
+    const taskPivotColCount = taskPivotRange.getColumnCount();
+    taskPivotRange.getCell(taskPivotRowCount - 1, 0).getEntireRow().getFormat().getFont().setBold(true);
+    taskPivotRange.getCell(0, taskPivotColCount - 1).getEntireColumn().getFormat().getFont().setBold(true);
+    applyBorders(taskPivotRange);
+
+    // ── 8. Get Violations - Liens data ────────────────────────────
+    const violSheet = workbook.getWorksheet("Violations - Liens");
+    if (!violSheet) {
+        console.log("ERROR: 'Violations - Liens' sheet not found.");
+        return;
+    }
+    const violUsedRange = violSheet.getUsedRange();
+    if (!violUsedRange) {
+        console.log("ERROR: No data found in 'Violations - Liens' sheet.");
+        return;
+    }
+    const violLastRow = violUsedRange.getRowCount();
+    const violLastCol = violUsedRange.getColumnCount();
+    const violLastColLetter = columnIndexToLetter(violLastCol - 1);
+    const violDataRange = violSheet.getRange(`A1:${violLastColLetter}${violLastRow}`);
+
+    // ── 9. Place Violations pivot below Task Summary pivot ────────
+    const taskPivotEndRow = taskPivotRange.getRowIndex() + taskPivotRange.getRowCount();
+    const violStartRow = taskPivotEndRow + 3;
+    const violLabelCell = pivotSheet.getCell(violStartRow, 0);
+    const violPivotCell = pivotSheet.getCell(violStartRow + 2, 0);
+
+    violLabelCell.setValue("VIOLATIONS - LIENS - HEARINGS");
+    violLabelCell.getFormat().getFont().setBold(true);
+    violLabelCell.getFormat().getFill().setColor("#FFFF00");
+
+    // ── 10. Create Violations - Liens pivot ───────────────────────
+    const violPivot = pivotSheet.addPivotTable(
+        "ViolationsPivot",
+        violDataRange,
+        violPivotCell
+    );
+    violPivot.addRowHierarchy(violPivot.getHierarchy("Assigned"));
+    violPivot.addColumnHierarchy(violPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+    const violValueField = violPivot.addDataHierarchy(violPivot.getHierarchy("TASK_ID"));
+    violValueField.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    violPivot.refresh();
+
+    applyDateHighlighting(pivotSheet, violPivot, todayTime);
+    const violPivotRange = violPivot.getLayout().getRange();
+    const violPivotRowCount = violPivotRange.getRowCount();
+    const violPivotColCount = violPivotRange.getColumnCount();
+    violPivotRange.getCell(violPivotRowCount - 1, 0).getEntireRow().getFormat().getFont().setBold(true);
+    violPivotRange.getCell(0, violPivotColCount - 1).getEntireColumn().getFormat().getFont().setBold(true);
+    applyBorders(violPivotRange);
+
+    pivotSheet.getUsedRange().getFormat().autofitColumns();
+    pivotSheet.getUsedRange().getFormat().autofitRows();
+    console.log("Assigned Task Summary sheet created successfully.");
+
+    // ══════════════════════════════════════════════════════════════
+    // RED FONT — ASSIGNED COLUMN ON RAW DATA TABS
+    // ══════════════════════════════════════════════════════════════
+
+    // ── Task Summary: find Assigned column and set font red ───────
+    const taskRawData = taskSheet.getUsedRange().getValues() as string[][];
+    const taskHeaders = taskRawData[0];
+    let taskAssignedCol = -1;
+    for (let c = 0; c < taskHeaders.length; c++) {
+        if (String(taskHeaders[c]).trim().toUpperCase() === "ASSIGNED") {
+            taskAssignedCol = c;
+            break;
+        }
+    }
+    if (taskAssignedCol !== -1) {
+        const taskAssignedColLetter = columnIndexToLetter(taskAssignedCol);
+        const taskTotalRows = taskRawData.length;
+        taskSheet.getRange(`${taskAssignedColLetter}1:${taskAssignedColLetter}${taskTotalRows}`)
+            .getFormat().getFont().setColor("#FF0000");
+        console.log(`Task Summary: Assigned column (${taskAssignedColLetter}) set to red font.`);
+    } else {
+        console.log("Task Summary: 'Assigned' column not found.");
+    }
+
+    // ── Violations - Liens: find Assigned column and set font red ─
+    const violRawData = violSheet.getUsedRange().getValues() as string[][];
+    const violHeaders = violRawData[0];
+    let violAssignedCol = -1;
+    for (let c = 0; c < violHeaders.length; c++) {
+        if (String(violHeaders[c]).trim().toUpperCase() === "ASSIGNED") {
+            violAssignedCol = c;
+            break;
+        }
+    }
+    if (violAssignedCol !== -1) {
+        const violAssignedColLetter = columnIndexToLetter(violAssignedCol);
+        const violTotalRows = violRawData.length;
+        violSheet.getRange(`${violAssignedColLetter}1:${violAssignedColLetter}${violTotalRows}`)
+            .getFormat().getFont().setColor("#FF0000");
+        console.log(`Violations - Liens: Assigned column (${violAssignedColLetter}) set to red font.`);
+    } else {
+        console.log("Violations - Liens: 'Assigned' column not found.");
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // DETAILED LOAN SUMMARY SHEET (Green tab)
+    // ══════════════════════════════════════════════════════════════
+
+    // ── 11. Create or replace 'Detailed Loan Summary' sheet ───────
+    const loanSheetName = "Detailed Loan Summary";
+    const existingLoan = workbook.getWorksheet(loanSheetName);
+    if (existingLoan) existingLoan.delete();
+    const loanSheet = workbook.addWorksheet(loanSheetName);
+    loanSheet.setTabColor("#00B050"); // Green
+
+    // ── 12. Add label ─────────────────────────────────────────────
+    loanSheet.getRange("A1").setValue("DETAILED LOAN SUMMARY");
+    loanSheet.getRange("A1").getFormat().getFont().setBold(true);
+    loanSheet.getRange("A1").getFormat().getFill().setColor("#00B050");
+    loanSheet.getRange("A1").getFormat().getFont().setColor("#FFFFFF");
+
+    // ── 13. Create Detailed Loan Summary pivot at A3 ──────────────
+    const loanPivot = loanSheet.addPivotTable(
+        "DetailedLoanPivot",
+        taskDataRange,
+        loanSheet.getRange("A3")
+    );
+
+    // Rows: TASK_ID, Assigned, LOAN_NUMBER
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("TASK_ID"));
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("Assigned"));
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("LOAN_NUMBER"));
+
+    // Columns: TASK_FOLLOW_UP_DATE
+    loanPivot.addColumnHierarchy(loanPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+
+    // Values: Count of TASK_ID
+    const loanValueField = loanPivot.addDataHierarchy(loanPivot.getHierarchy("TASK_ID"));
+    loanValueField.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    loanPivot.refresh();
+
+    // ── 14. Apply date highlighting, borders, bold totals ─────────
+    applyDateHighlighting(loanSheet, loanPivot, todayTime);
+    const loanPivotRange = loanPivot.getLayout().getRange();
+    const loanPivotRowCount = loanPivotRange.getRowCount();
+    const loanPivotColCount = loanPivotRange.getColumnCount();
+    loanPivotRange.getCell(loanPivotRowCount - 1, 0).getEntireRow().getFormat().getFont().setBold(true);
+    loanPivotRange.getCell(0, loanPivotColCount - 1).getEntireColumn().getFormat().getFont().setBold(true);
+    applyBorders(loanPivotRange);
+
+    loanSheet.getUsedRange().getFormat().autofitColumns();
+    loanSheet.getUsedRange().getFormat().autofitRows();
+    console.log("Detailed Loan Summary sheet created successfully.");
+}
+
+// ── Helper: apply red/orange/yellow date highlighting ──────────
+function applyDateHighlighting(
+    pivotSheet: ExcelScript.Worksheet,
+    pivot: ExcelScript.PivotTable,
+    todayTime: number
+) {
+    const layout = pivot.getLayout();
+    const pivotRange = layout.getRange();
+
+    // Use getTexts() instead of getValues() — more reliable for formatted dates
+    const pivotTexts = pivotRange.getTexts();
+    const pivotRowCount = pivotTexts.length;
+    const pivotColCount = pivotTexts[0].length;
+
+    console.log(`Pivot: ${pivotRowCount} rows x ${pivotColCount} cols`);
+
+    const threeDaysTime = todayTime + 3 * 24 * 60 * 60 * 1000;
+
+    const RED = "FF0000";
+    const ORANGE = "FFA500";
+    const YELLOW = "FFFF00";
+
+    // ── Find which row contains the actual date headers ───────────
+    // Scan rows until we find one where col 1 looks like a date
+    let dateHeaderRow = -1;
+    for (let row = 0; row < pivotRowCount; row++) {
+        const cellText = pivotTexts[row][1];
+        if (cellText && cellText !== "" && !isNaN(Date.parse(String(cellText)))) {
+            dateHeaderRow = row;
+            console.log(`Date header row found at index: ${row}`);
+            break;
+        }
+    }
+
+    if (dateHeaderRow === -1) {
+        console.log("ERROR: Could not find date header row in pivot.");
+        return;
+    }
+
+    const headerRow = pivotTexts[dateHeaderRow];
+
+    for (let col = 1; col < pivotColCount - 1; col++) {
+        const headerText = String(headerRow[col] ?? "").trim();
+        if (!headerText || headerText === "Grand Total") continue;
+
+        const colDate = new Date(headerText);
+        colDate.setHours(0, 0, 0, 0);
+        const colTime = colDate.getTime();
+
+        if (isNaN(colTime)) {
+            console.log(`  col[${col}]: could not parse "${headerText}" as date, skipping`);
+            continue;
+        }
+
+        console.log(`  col[${col}]: "${headerText}" → ${colDate.toDateString()}`);
+
+        let fillColor: string | null = null;
+        if (colTime < todayTime) {
+            fillColor = RED;
+        } else if (colTime === todayTime) {
+            fillColor = ORANGE;
+        } else if (colTime <= threeDaysTime) {
+            fillColor = YELLOW;
+        }
+
+        if (!fillColor) continue;
+
+        // Color entire column from header row down to last data row (exclude Grand Total row)
+        for (let row = dateHeaderRow; row < pivotRowCount - 1; row++) {
+            pivotRange.getCell(row, col).getFormat().getFill().setColor(fillColor);
+        }
+    }
+}
+
+// ── Helper: apply full grid borders to a range ─────────────────
+function applyBorders(range: ExcelScript.Range) {
+    const sides = [
+        ExcelScript.BorderIndex.edgeTop,
+        ExcelScript.BorderIndex.edgeBottom,
+        ExcelScript.BorderIndex.edgeLeft,
+        ExcelScript.BorderIndex.edgeRight,
+        ExcelScript.BorderIndex.insideHorizontal,
+        ExcelScript.BorderIndex.insideVertical
+    ];
+    for (const side of sides) {
+        range.getFormat().getRangeBorder(side).setStyle(ExcelScript.BorderLineStyle.continuous);
+        range.getFormat().getRangeBorder(side).setWeight(ExcelScript.BorderWeight.thin);
+    }
+}
+
+// ── Helper: convert 0-based column index to Excel letter(s) ────
+function columnIndexToLetter(index: number): string {
+    let letter = "";
+    let n = index + 1;
+    while (n > 0) {
+        const rem = (n - 1) % 26;
+        letter = String.fromCharCode(65 + rem) + letter;
+        n = Math.floor((n - 1) / 26);
+    }
+    return letter;
+}
+
+Here’s a step-by-step report of  flow’s actions:
+
+1.Trigger: When_an_agent_calls_the_flow
+
+code view:
+{
+  "type": "Request",
+  "kind": "Skills",
+  "inputs": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "description": "UserFeedback",
+          "title": "Text-UserFeedback",
+          "type": "string",
+          "x-ms-content-hint": "TEXT",
+          "x-ms-dynamically-added": true
+        },
+        "file": {
+          "description": "UploadedFile",
+          "title": "File-UploadedFile",
+          "type": "object",
+          "properties": {
+            "contentBytes": {
+              "type": "string",
+              "format": "byte"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "x-ms-content-hint": "FILE",
+          "x-ms-dynamically-added": true
+        },
+        "text_2": {
+          "description": "FilePath",
+          "title": "Text-FilePath",
+          "type": "string",
+          "x-ms-content-hint": "TEXT",
+          "x-ms-dynamically-added": true
+        },
+        "text_1": {
+          "description": "FileName",
+          "title": "Text-FileName",
+          "type": "string",
+          "x-ms-content-hint": "TEXT",
+          "x-ms-dynamically-added": true
+        }
+      },
+      "required": [
+        "text",
+        "file",
+        "text_2",
+        "text_1"
+      ]
+    }
+  }
+}
+
+Starts when an agent submits feedback, a file, file path, and file name.
+2.Create_file
+
+code view:
+
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "dataset": "https://cenlarfsb.sharepoint.com/sites/CenlarPhoenixBurst",
+      "folderPath": "@triggerBody()?['text_2']",
+      "name": "@triggerBody()?['text_1']",
+      "body": "@triggerBody()?['file']?['contentBytes']"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+      "connection": "shared_sharepointonline",
+      "operationId": "CreateFile"
+    }
+  },
+  "runAfter": {},
+  "runtimeConfiguration": {
+    "contentTransfer": {
+      "transferMode": "Chunked"
+    }
+  }
+}
+
+Uploads the submitted file to the specified SharePoint folder using the provided file path and name.
+3.Get_file_metadata_using_path
+
+code view:
+
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "dataset": "https://cenlarfsb.sharepoint.com/sites/CenlarPhoenixBurst",
+      "path": "@outputs('Create_file')?['body/Path']"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+      "connection": "shared_sharepointonline",
+      "operationId": "GetFileMetadataByPath"
+    }
+  },
+  "runAfter": {
+    "Create_file": [
+      "Succeeded"
+    ]
+  }
+}
+
+Retrieves metadata for the uploaded file from SharePoint, using the file’s path.
+4.Run_script_from_SharePoint_library_-_1
+code view:
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "source": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "drive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "file": "@outputs('Get_file_metadata_using_path')?['body/Id']",
+      "scriptSource": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "scriptDrive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "scriptId": "016C3FNDCYPLASSBZJHNAKLQLRRCXG74JV"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+      "connection": "shared_excelonlinebusiness",
+      "operationId": "RunScriptProdV2"
+    }
+  },
+  "runAfter": {
+    "Get_file_metadata_using_path": [
+      "Succeeded"
+    ]
+  },
+  "metadata": {
+    "016C3FNDCYPLASSBZJHNAKLQLRRCXG74JV": "/Cenlar and Phoenix Coordination Hub/AI Innovation Lab/Use Cases/14. Property Preservation Management Reporting Automation/Data/Part 1.osts",
+    "tableId": null
+  }
+}
+
+Runs the first Excel script on the uploaded file to process its contents.
+5.Run_script_from_SharePoint_library_2
+code view:
+
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "source": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "drive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "file": "@outputs('Get_file_metadata_using_path')?['body/Id']",
+      "scriptSource": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "scriptDrive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "scriptId": "016C3FNDEEFWHROBFDN5AK3QEA3UY57JFB"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+      "connection": "shared_excelonlinebusiness",
+      "operationId": "RunScriptProdV2"
+    }
+  },
+  "runAfter": {
+    "Run_script_from_SharePoint_library_-_1": [
+      "Succeeded"
+    ]
+  },
+  "metadata": {
+    "016C3FNDCYPLASSBZJHNAKLQLRRCXG74JV": "/Cenlar and Phoenix Coordination Hub/AI Innovation Lab/Use Cases/14. Property Preservation Management Reporting Automation/Data/Part 1.osts",
+    "016C3FNDEEFWHROBFDN5AK3QEA3UY57JFB": "/Cenlar and Phoenix Coordination Hub/AI Innovation Lab/Use Cases/14. Property Preservation Management Reporting Automation/Data/Part 2 Matrix w Post.osts",
+    "tableId": null
+  }
+}
+
+Runs the second Excel script for further processing.
+6.Run_script_from_SharePoint_library_3
+
+code view:
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "source": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "drive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "file": "@outputs('Get_file_metadata_using_path')?['body/Id']",
+      "scriptSource": "groups/f50b044b-ff45-48a7-a224-db775d037017",
+      "scriptDrive": "b!CacpBa287U2HppBlqOyUWurIO5amy-hNgeO0IqRcYV8mIpwuwnaHQYQs6RTI3yD_",
+      "scriptId": "016C3FNDEJXGVHL65K3ZAYBR7R5BLF6CJW"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+      "connection": "shared_excelonlinebusiness",
+      "operationId": "RunScriptProdV2"
+    }
+  },
+  "runAfter": {
+    "Run_script_from_SharePoint_library_2": [
+      "Succeeded"
+    ]
+  },
+  "metadata": {
+    "016C3FNDEJXGVHL65K3ZAYBR7R5BLF6CJW": "/Cenlar and Phoenix Coordination Hub/AI Innovation Lab/Use Cases/14. Property Preservation Management Reporting Automation/Data/Part 3 revised.osts",
+    "tableId": null
+  }
+}
+
+Executes the third Excel script for final processing.
+7.Display
+
+code view:
+{
+  "type": "Compose",
+  "inputs": "File uploaded, renamed, and Excel scripts completed successfully.",
+  "runAfter": {
+    "Run_script_from_SharePoint_library_3": [
+      "Succeeded"
+    ]
+  }
+}
+
+Shows a confirmation message: “File uploaded, renamed, and Excel scripts completed successfully.”
+Each step only runs after the previous one succeeds, ensuring a reliable sequence.
 
-## What is this solution?
 
-The document describes an **AI-powered Property Preservation Task Report Management Tool** built in the AI Innovation Lab. Its purpose is to automate a manual Excel-based reporting process that users currently perform every day.
-### Current Problem
-
-* Employees manually process Excel reports.
-* The process takes **45–60 minutes per day**.
-* It requires technical knowledge and is prone to human error. 
-### Proposed Solution
-
-The solution uses:
-
-* **Copilot Studio (AI Agent)**
-* **Power Automate Cloud Flows**
-* **Excel Scripts**
-* **SharePoint**
-
-to automatically process reports and generate outputs in about **30 seconds**. 
-***
-
-# Business Benefits
-
-### Before
-
-* Manual Excel formatting
-* Manual task assignment
-* Manual report generation
-* High effort and time consumption
-
-### After
-
-* Automated report processing
-* Automated business-rule (matrix) application
-* Automated report generation
-* Faster turnaround and fewer errors
-
-### Result
-
-* Reduces processing time from nearly **1 hour to \~30 seconds**
-* Improves consistency and accuracy
-* Eliminates repetitive manual work
-
-***
-
-# Architecture Explained
-
-## High-Level Flow
-
-
-User
-  │
-  ▼
-Copilot Studio Agent
-  │
-  ▼
-Power Automate Flow
-  │
-  ├── Excel Scripts
-  │
-  └── SharePoint
-  │
-  ▼
-Processed Report Output
-```
-
-### Step-by-Step Architecture
-
-### 1. User Provides Input
-
-The user interacts with a Copilot Agent and provides:
-
-* Input report file
-* Processing parameters
-
-The process starts from a conversational interface. 
-***
-
-### 2. Copilot Studio Agent
-
-The AI Agent:
-
-* Receives user instructions
-* Understands required actions
-* Calls Power Automate workflows
-
-Think of it as the **orchestrator** of the whole process.
-***
-
-### 3. Power Automate Flow
-
-Power Automate performs the automation:
-
-* Copies the input file
-* Executes Excel scripts
-* Runs processing workflows
-* Manages file movement
-
-This is the engine that executes the business process. 
-***
-
-### 4. Excel Scripts
-
-Excel scripts contain the business logic.
-
-Responsibilities:
-
-* Sort data
-* Filter rows
-* Format reports
-* Apply matrix-based decision rules
-* Assign tasks
-
-The document mentions that manual matrix logic was converted into automated scripts. 
-***
-
-### 5. SharePoint Storage
-
-SharePoint is used for:
-
-* Input file storage
-* Script storage
-* Output report storage
-
-It acts as the centralized repository.
-***
-
-### 6. Output Generation
-
-The processed report is:
-
-* Generated automatically
-* Saved back to SharePoint
-* Ready for user consumption
-
-No manual intervention required after execution. 
-
-***
-
-# Detailed Architecture Components
-
-| Component      | Purpose                              |                                                              |
-| -------------- | ------------------------------------ | ------------------------------------------------------------ |
-| Copilot Studio | User interface and AI orchestration  |                                                              |
-| Power Automate | Workflow execution                   |                                                              |
-| Excel Scripts  | Business rules and report processing |                                                              |
-| SharePoint     | File storage and retrieval           |                                                              |
-| User           | Provides input and reviews output    | 
-***
-
-# Data Flow
-
-```text
-Input Excel Report
-        │
-        ▼
-Copilot Agent
-        │
-        ▼
-Power Automate
-        │
-        ▼
-Excel Script Logic
-        │
-        ▼
-Matrix Rules Applied
-        │
-        ▼
-Output Report
-        │
-        ▼
-SharePoint
-```
-
- 
-***
-
-# Security Considerations
-
-The document identifies several production concerns:
-
-### Licensing
-
-Users require:
-
-* Copilot Premium License
-* Appropriate permissions
-
-### Access Control
-
-Users currently need:
-
-* Sandbox access
-* Administrative permissions
-
-### Production Recommendation
-
-Use a dedicated **Service Account**:
-
-* Centralized permissions
-* Easier SharePoint integration
-* Better governance and support
-***
-
-# Risks & Gaps
-
-### Current Limitations
-
-1. Sandbox-only implementation
-2. Manual file upload still required
-3. Matrix rule changes require script updates
-4. Copilot token/credit consumption can become expensive
-5. User licensing requirements need to be addressed
-
-***
-
-# Production Readiness Assessment
-
-The report evaluates the solution as largely validated:
-
-| Area                  | Status                 |                                                              |
-| --------------------- | ---------------------- | ------------------------------------------------------------ |
-| System Integration    | ✅ Validated            |                                                              |
-| Data Management       | ✅ Validated            |                                                              |
-| AI Orchestration      | ✅ Validated            |                                                              |
-| Infrastructure        | ✅ Validated            |                                                              |
-| Security & Compliance | ⚠️ Partially Validated |  [\[architecture \| 
-
-***
-
-# Recommended Future-State Architecture
-
-The document suggests evolving toward a more automated model:
-
-```text
-SharePoint File Drop
-         │
-         ▼
-Automatic Trigger
-         │
-         ▼
-Power Automate
-         │
-         ▼
-AI Agent Processing
-         │
-         ▼
-Excel Logic Execution
-         │
-         ▼
-Output Saved to SharePoint
-```
-
-Benefits:
-
-* No manual uploads
-* Reduced human involvement
-* Near end-to-end automation 
-
-***
-
-# Executive Takeaway
-
-This prototype successfully demonstrates that **Copilot Studio + Power Automate + Excel Scripts + SharePoint** can automate a labor-intensive reporting process. The solution reduces work from roughly **one hour to about 30 seconds**, improves accuracy, and is considered technically ready for production, provided licensing, security, service accounts, and automation design decisions are addressed before deployment. 
-
-
-
-
-Default Management Reporting Automation 
-
-Use Case 
-
-Experimentation Phase Breakdown   
-
- 
-
-Phase 1: Workflow Logic Automation 
-
-Objective: Validate that the automation can correctly perform all steps in the reporting process. This includes sorting, filtering, lookup logic, assignment rules, pivot creation, and summary generation. 
-
-Data Required:  
-
-Sample daily source report 
-
-Prior day report for VLOOKUP-style reference 
-
-Task Assignment Matrix 
-
-Example pivot table structures and expected output formats 
-
-Evaluation:  
-
-Automated output matches the manual report 
-
-Assignment logic is applied correctly 
-
-Pivot tables reflect the same counts, groupings, and color rules 
-
-All workflow steps complete without user intervention 
-
-Expected Outcome:  
-
-A fully accurate automated version of the daily workflow using sample files. The automation reliably reproduces the manual steps end to end. 
-
- 
-
-Phase 2: Automated File Intake 
-
-Objective: Ensure the automation can locate and load required files from the correct shared locations without manual upload. This includes pulling the current day report and retrieving the prior day report for lookup values. 
-
-Data Required:  
-
-Access to the actual Daily folder for source file intake 
-
-Prior day report directory 
-
-Stable naming conventions for daily reports 
-
-Evaluation:  
-
-Files are successfully located each day 
-
-Folder paths and naming patterns are recognized 
-
-Errors or unexpected files trigger alert notification 
-
-Intake completes without user correction 
-
-Expected Outcome:  
-
-The automation retrieves required files reliably and flags any missing, mislabeled, or incorrect files. 
-
- 
-
-Phase 3: Automated Output & Repository Placement 
-
-Objective: Confirm that the automation can export the completed reports to the correct year, month, and stakeholder folders and apply the required naming rules. The automation should also prepare stakeholder versions using the logic from the procedure. 
-
-Data Required:  
-
-Destination folder paths for final outputs 
-
-Naming conventions  
-
-Access to assignment summary and pivot table output templates 
-
-Evaluation:  
-
-Output files save to the correct locations 
-
-Naming rules are applied correctly 
-
-Pivot tables are refreshed before export 
-
-Stakeholder versions reflect the correct filtered populations 
-
-Expected Outcome:  
-
-All outputs are saved in the correct repositories and match the current manual versions in structure, content, and naming. 
-
- 
-
-Phase 4: Notification & Draft Email Automation 
-
-Objective: Enable the automation to generate draft emails for stakeholder groups with the correct embedded tables and attachments. Also ensure that the automation alerts users if email generation fails. 
-
-Data Required:  
-
-Email templates used for Onshore, Moder, and Accenture groups 
-
-Expected placement of pivot tables within the email body 
-
-Archive folder for saving sent or draft emails 
-
-Evaluation:  
-
-Draft emails populate with correct tables and attachments 
-
-Each stakeholder receives the correct version 
-
-Archive copies are saved correctly 
-
-Alerts trigger for missing attachments or failed email preparation 
-
-Expected Outcome:  
-
-Daily emails can be produced automatically with correct content. Users only need to review and send the drafts. 
-
-Follow up meeting:
-
-
-Summary of progress so far
-Everyone agrees the goal is to enable Darin's team to use the solution in production, with IT strengthening for reliability.
-The solution has been tested for about a month, and the Phoenix team provided a demo and technical documentation.
-Current setup is in Phoenix's lab environment; the next step is migration to Cenlar's production environment.
-Next steps for the remainder of the meeting
-Clarify the technical requirements and process for moving from sandbox to production.
-Identify any blockers or IT controls needed for a smooth transition and ongoing support.
-
-Summary of today's technical transition planning:
-Next steps: The group will schedule sessions with Noreen and others to walk through the production move, and Karen will share demo recordings and documentation links for full context.
-Productionization plan: The team agreed to move the automation from Phoenix Lab to Cenlar FSB production, update folder variables, and coordinate IT strengthening and governance.
