@@ -1,30 +1,55 @@
-Power Automate + Dynamic SharePoint Lists
 
-We remove the expensive Copilot "Chat" trigger, fully automate it in the background, and fix the hardcoded business rules.
+Use case ownership 
 
-How it works:
-A user simply drops the raw file into a SharePoint folder (or the system receives it via email). A Power Automate Cloud Flow wakes up automatically. It reads the business rules (the Matrix) dynamically from a SharePoint List (which Darin’s team can edit via a simple UI). It then runs lightweight Excel scripts to format the pivots and auto-drafts the emails to stakeholders.
+- Sangam confirmed that the Cenlar AI engineering team will take over responsibility for the use case moving forward.
+Documentation and transition 
 
-Pros: cost effective, 
-Moving the Matrix out of code and into a SharePoint List means BU can update assignment rules, time-to-market
+- Himani sent the use case transition form to Karen, and Karen attached it to the meeting invite.
+Knowledge transfer 
 
-Cons:
-If the source vendor changes the column names in the raw report, the script will still break and require a quick developer fix.
+- Ryan explained that the meeting's purpose is to transfer knowledge about property preservation bids use case to the Cenlar team as Phoenix's involvement winds down.
+Use case overview 
 
-UiPath
-How it works:
-A UiPath unattended bot is scheduled to run every morning. It can actually log into the external vendor portal (e.g., MSP, Black Knight, etc.), download the raw file itself, process the  data tables in memory, generate the Excel output, and distribute the emails.
+- Himani described the manual property preservation bids process and explained how the AI solution aims to automate bid review, cost comparison, and recommendation generation, while keeping human review as the final step.
+- Himani explained that AI can effectively handle photo validation and cost comparison for property preservation bids, but work necessity assessment remains highly subjective and complex.
+Project progress and blockers 
 
-Pros:
-End-to-End Automation: Eliminates even the "file drop" step. The bot goes and gets the data itself.
+- Himani reported that phase one data preparation was completed, including extracting attachments and photos from emails and PDFs, but PDF field extraction was blocked due to Azure lab permissions issues.
+- Himani confirmed that the phased approach adds value at each stage, with initial phases focusing on missing information, bid recommendations, and later phases requiring more discovery and rule generation.
+Project phases and feedback 
 
-Cons:
-Overkill for just formatting Excel: If we already get the file delivered easily, spinning up UiPath just to sort rows and make Pivot Tables is computationally expensive.
+- Darin described the plan to implement a feedback loop in phase four, allowing agents to provide input on recommendations and enabling the system to learn and improve accuracy over time.
+- Darin and Shanth clarified that phase one and two focus on automation, phase three involves human decision-making with AI recommendations, and phase four incorporates feedback to codify decision rules.
+Technical documentation and access 
 
-Python + Applied ML & LLM
-How it works:
-The raw data flows directly into a cloud data environment (like Azure Data Lake). Instead of running  Excel macros, we use Python (Pandas) to  process large number of rows.
-We integrate an LLM (Azure OpenAI) to read any unstructured notes or comments in the raw data to categorize  exceptions
+- Himani confirmed that all current code for the property preservation bids use case is stored in Azure within the Phoenix Prop Bits app, and is accessible to the team.
+- Himani confirmed that Darren cleared 10 emails with compliance for use as test data, which are available in the Teams channel and Azure lab.
+Project progress and approvals 
 
-The Output: Instead of sending static Excel pivots, the data feeds a real-time Power BI Dashboard, and the AI drafts a natural-language executive summary email.
-Cons: Setting up infra
+- Himani reported that the business validated the use case, and compliance approved data access for 10 emails, which are being used for ongoing work.
+Technical implementation 
+
+- Himani explained that the technical plan involved parsing EML files, extracting attachments, and storing them in BLOB storage, with separate functions for Excel, PDF, and photo extraction.
+- Himani clarified that the photo extractor used a Python library (PyMo PDF) instead of Azure services, as Document Intelligence was not reliable enough for photo extraction.
+Technical blockers 
+
+- Himani reported that access to GPT models was blocked, which prevented automated extraction of line items from unstructured PDFs, and referenced similar issues faced in the forecasting use case.
+Vendor data formats 
+
+- Darin confirmed that the Excel report format from Decisions is consistent across vendors, with identical column headers, and Safeguard is the primary vendor for the initial experiment phase.
+- Darin explained that the bid order number in the Excel report is a unique ID from the vendor system, used to match and compare with information provided in emails and PDFs.
+Data sources and workflow 
+
+- Himani clarified that the team has only worked with information from emails, including the PDF and spreadsheet generated from Decisions, and has not accessed data stored directly within Decisions.
+Data completeness and vendor communication 
+
+- Himani demonstrated that some bids are missing either a cost estimation report or photos, and explained that the team drafts emails to vendors to request missing information.
+Bid review and cost estimation 
+
+- Darin clarified that the cost estimation report is an independent assessment using HUD-approved programs, and its dollar amounts may differ from vendor bids due to standardized pricing by zip code.
+Photo identification and AI potential 
+
+- Kiran noted that photos in the bids are only labeled with timestamps and generic tags, making identification difficult without computer vision models.
+Vendor technology initiatives 
+
+- Darin shared that Safeguard, a major vendor, is working on utilizing AI to associate bids with relevant repairs, such as roof repairs.
