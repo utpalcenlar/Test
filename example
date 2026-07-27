@@ -1,12 +1,1 @@
-Step 1: Database Expansion & Mapping (Dataverse)
-Update the Ticket Status choice column in Dataverse to include DFA-specific lifecycle stages (e.g., Clarification, Awaiting Posting, Assigned to Onshore).
-Create a "DFA Cash Routing Rules" matrix in the database to automatically route specific request types to onshore vs. offshore agents based on the sender or subject.
-Step 2: Spoke Integration (Listener Flow)
-Create the lightweight "Listener Flow" for the dfacashrequest mailbox.
-Configure the flow to catch the incoming emails, tag them with Source Queue = DFA Cash, and pass the payload securely to our central AI Hub.
-Step 3: Hub Intelligence Tuning (AI Prompt)
-Update the central Azure AI prompt to recognize DFA Cash specific data.
-Train the AI to extract Loan Numbers from DFA subjects (e.g., "4771683309- reclass request") and classify emails as "Actionable" vs. "FYI" to reduce inbox noise.
-Step 4: UI & Dashboard Generation (Replacing the Excel Report)
-Create a dedicated "DFA Cash Queue" View inside our Model-Driven App.
-Build a live Dataverse Dashboard that perfectly replicates Moder’s daily Excel summary (showing counts of tickets in Clarification, Awaiting Posting, etc.). This will permanently eliminate the need for Moder to manually generate these daily reports.
+df
