@@ -1,35 +1,25 @@
-We have been working towards developing an AI agent to help pull together multiple pieces of data  - loan notes, histories, call transcriptions, etc and use co-pilot to help research complaints.  We were going to do this with SQL queries and co-pilot.  In talking with Colleen, she suggested we discuss because you may be able to use this as a possible use case for Foundry.  Below are some notes from when we previously discussed to give you a little more context.   Would like to set up time for us to meet to see if this is something worth pursuing.
+// --- RED FONT FOR ASSIGNED COLUMN ON RAW DATA TABS ---
+    const rawSheets = ["Task Summary", "Violations - Liens"];
+    for (let sheetName of rawSheets) {
+        const rawSheet = workbook.getWorksheet(sheetName);
+        if (!rawSheet) continue;
 
- 
+        const rawUsedRange = rawSheet.getUsedRange();
+        if (!rawUsedRange) continue;
 
- 
+        const rawHeaders = rawUsedRange.getValues()[0] as string[];
+        let assignColIdx = -1;
+        
+        for (let c = 0; c < rawHeaders.length; c++) {
+            if (String(rawHeaders[c]).trim().toUpperCase() === "ASSIGNED") {
+                assignColIdx = c;
+                break;
+            }
+        }
 
- 
-
- 
-
- 
-
-Core themes:
-
-Automating complaint research using AI agents that analyze:
-
-Call transcripts (DAX)
-Loan transaction history
-Loan notes and documents
-Cross-referencing interactions against procedures to identify:
-
-Agent errors
-Process gaps
-Training opportunities
-Reducing manual work (e.g., listening to calls, reviewing screens)
-
-Scaling analysis across multiple complaints/loans
-
-Balancing data volume, accuracy, and hallucination risk
-
-Future-state vision:
-
-AI-assisted intake + research + insights
-Predictive identification of systemic issues
-Integration with procedures (Zendesk) and regulatory libraries
+        if (assignColIdx !== -1) {
+            const colLetter = columnIndexToLetter(assignColIdx);
+            const totalRows = rawUsedRange.getRowCount();
+            rawSheet.getRange(`${colLetter}1:${colLetter}${totalRows}`).getFormat().getFont().setColor("#FF0000");
+        }
+    }
