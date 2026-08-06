@@ -1,0 +1,167 @@
+function main(workbook: ExcelScript.Workbook) {
+
+    // Color code existing tabs
+    const violTabSheet = workbook.getWorksheet("Violations - Liens");
+    if (violTabSheet) violTabSheet.setTabColor("#FF0000");
+
+    // --- ASSIGNED TASK SUMMARY SHEET ---
+    const assignedSheetName = "Assigned Task Summary";
+    const existingAssigned = workbook.getWorksheet(assignedSheetName);
+    if (existingAssigned) existingAssigned.delete();
+    const pivotSheet = workbook.addWorksheet(assignedSheetName);
+    pivotSheet.setTabColor("#FFFF00");
+
+    const taskSheet = workbook.getWorksheet("Task Summary");
+    if (!taskSheet) return;
+    const taskUsedRange = taskSheet.getUsedRange();
+    const taskDataRange = taskSheet.getRange(`A1:${columnIndexToLetter(taskUsedRange.getColumnCount() - 1)}${taskUsedRange.getRowCount()}`);
+
+    // Normalize Assigned column
+    const taskRawValues = taskUsedRange.getValues() as string[][];
+    let assignedColIndex = -1;
+    for (let c = 0; c < taskRawValues[0].length; c++) {
+        if (String(taskRawValues[0][c]).trim().toUpperCase() === "ASSIGNED") assignedColIndex = c;
+    }
+    if (assignedColIndex !== -1) {
+        for (let r = 1; r < taskRawValues.length; r++) {
+            taskSheet.getCell(r, assignedColIndex).setValue(String(taskRawValues[r][assignedColIndex]).trim().toUpperCase());
+        }
+    }
+
+    // Build Task Pivot
+    pivotSheet.getRange("A1").setValue("TASK SUMMARY");
+    pivotSheet.getRange("A1").getFormat().getFont().setBold(true);
+    const taskPivot = pivotSheet.addPivotTable("TaskSummaryPivot", taskDataRange, pivotSheet.getRange("A3"));
+    taskPivot.addRowHierarchy(taskPivot.getHierarchy("Assigned"));
+    taskPivot.addColumnHierarchy(taskPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+    const taskValueField = taskPivot.addDataHierarchy(taskPivot.getHierarchy("TASK_ID"));
+    taskValueField.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    
+    // Apply Highlighting
+    applyDateHighlighting(taskPivot);
+
+    // Violations Pivot
+    const violSheet = workbook.getWorksheet("Violations - Liens");
+    const violUsedRange = violSheet.getUsedRange();
+    const violDataRange = violSheet.getRange(`A1:${columnIndexToLetter(violUsedRange.getColumnCount() - 1)}${violUsedRange.getRowCount()}`);
+
+    const taskPivotRange = taskPivot.getLayout().getRange();
+    const violStartRow = taskPivotRange.getRowIndex() + taskPivotRange.getRowCount() + 3;
+    pivotSheet.getCell(violStartRow, 0).setValue("VIOLATIONS - LIENS - HEARINGS");
+    pivotSheet.getCell(violStartRow, 0).getFormat().getFont().setBold(true);
+
+    const violPivot = pivotSheet.addPivotTable("ViolationsPivot", violDataRange, pivotSheet.getCell(violStartRow + 2, 0));
+    violPivot.addRowHierarchy(violPivot.getHierarchy("Assigned"));
+    violPivot.addColumnHierarchy(violPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+    const violValueField = violPivot.addDataHierarchy(violPivot.getHierarchy("TASK_ID"));
+    violValueField.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    
+    applyDateHighlighting(violPivot);
+
+    // Formatting
+    applyBorders(taskPivotRange);
+    applyBorders(violPivot.getLayout().getRange());
+    pivotSheet.getUsedRange().getFormat().autofitColumns();
+
+    // --- DETAILED LOAN SUMMARY ---
+    const loanSheetName = "Detailed Loan Summary";
+    const existingLoan = workbook.getWorksheet(loanSheetName);
+    if (existingLoan) existingLoan.delete();
+    const loanSheet = workbook.addWorksheet(loanSheetName);
+    loanSheet.setTabColor("#00B050");
+    
+    loanSheet.getRange("A1").setValue("DETAILED LOAN SUMMARY");
+    loanSheet.getRange("A1").getFormat().getFont().setBold(true);
+    
+    const loanPivot = loanSheet.addPivotTable("DetailedLoanPivot", taskDataRange, loanSheet.getRange("A3"));
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("TASK_ID"));
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("Assigned"));
+    loanPivot.addRowHierarchy(loanPivot.getHierarchy("LOAN_NUMBER"));
+    loanPivot.addColumnHierarchy(loanPivot.getHierarchy("TASK_FOLLOW_UP_DATE"));
+    const loanValueField2 = loanPivot.addDataHierarchy(loanPivot.getHierarchy("TASK_ID"));
+    loanValueField2.setSummarizeBy(ExcelScript.AggregationFunction.count);
+    
+    applyDateHighlighting(loanPivot);
+    applyBorders(loanPivot.getLayout().getRange());
+    loanSheet.getUsedRange().getFormat().autofitColumns();
+}
+
+// --- NEW SYSTEM-TIME AND BUSINESS DAY CALCULATOR ---
+function applyDateHighlighting(pivot: ExcelScript.PivotTable) {
+    const layout = pivot.getLayout();
+    const pivotRange = layout.getRange();
+    const pivotTexts = pivotRange.getTexts();
+    const pivotColCount = pivotTexts[0].length;
+
+    // Set "Today" based on actual cloud execution time, zero out hours
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const todayTime = now.getTime();
+
+    // Helper: Add Business Days (Skip Sat/Sun)
+    function getBusinessDaysFuture(startDate: Date, days: number): number {
+        let result = new Date(startDate.getTime());
+        let added = 0;
+        while (added < days) {
+            result.setDate(result.getDate() + 1);
+            if (result.getDay() !== 0 && result.getDay() !== 6) added++;
+        }
+        return result.getTime();
+    }
+    
+    const threeBusinessDaysTime = getBusinessDaysFuture(now, 3);
+
+    // Find date header row
+    let dateHeaderRow = -1;
+    for (let row = 0; row < pivotTexts.length; row++) {
+        if (pivotTexts[row][1] && !isNaN(Date.parse(String(pivotTexts[row][1])))) {
+            dateHeaderRow = row;
+            break;
+        }
+    }
+    if (dateHeaderRow === -1) return;
+
+    const headerRow = pivotTexts[dateHeaderRow];
+
+    // Color columns
+    for (let col = 1; col < pivotColCount - 1; col++) {
+        const headerText = String(headerRow[col] ?? "").trim();
+        if (!headerText || headerText === "Grand Total") continue;
+
+        const colDate = new Date(headerText);
+        colDate.setHours(0, 0, 0, 0);
+        const colTime = colDate.getTime();
+
+        if (isNaN(colTime)) continue;
+
+        let fillColor: string | null = null;
+        if (colTime < todayTime) fillColor = "FF0000"; // RED: Past Due
+        else if (colTime === todayTime) fillColor = "FFA500"; // ORANGE: Due Today
+        else if (colTime <= threeBusinessDaysTime) fillColor = "FFFF00"; // YELLOW: Due 1-3 Business Days
+
+        if (!fillColor) continue;
+
+        for (let row = dateHeaderRow; row < pivotTexts.length - 1; row++) {
+            pivotRange.getCell(row, col).getFormat().getFill().setColor(fillColor);
+        }
+    }
+}
+
+function applyBorders(range: ExcelScript.Range) {
+    const sides = [ExcelScript.BorderIndex.edgeTop, ExcelScript.BorderIndex.edgeBottom, ExcelScript.BorderIndex.edgeLeft, ExcelScript.BorderIndex.edgeRight, ExcelScript.BorderIndex.insideHorizontal, ExcelScript.BorderIndex.insideVertical];
+    for (const side of sides) {
+        range.getFormat().getRangeBorder(side).setStyle(ExcelScript.BorderLineStyle.continuous);
+        range.getFormat().getRangeBorder(side).setWeight(ExcelScript.BorderWeight.thin);
+    }
+}
+
+function columnIndexToLetter(index: number): string {
+    let letter = "";
+    let n = index + 1;
+    while (n > 0) {
+        const rem = (n - 1) % 26;
+        letter = String.fromCharCode(65 + rem) + letter;
+        n = Math.floor((n - 1) / 26);
+    }
+    return letter;
+}
