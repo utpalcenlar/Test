@@ -1,0 +1,194 @@
+function main(workbook: ExcelScript.Workbook) {
+
+    // --- PRE-SALE MATRIX (Fully Updated from HTML) ---
+    const preSaleMatrix: Record<string, string> = {
+        "ALLERT": "KMC",    "ALERTT": "KMC",    "BADPRP": "LMGS3",  
+        "BNDTRK": "LMSH4",  "BLNKIM": "KMC",    "BNKPRP": "TLR",    
+        "CEVALU": "LMVN1",  "CHRN01": "TLR",    "CHRN02": "TLR",    
+        "DEFVAC": "TLR",    "DILFIO": "TLR",    "FCREPP": "CPN",    
+        "FEECST": "LMS6S",  "FEMAIN": "LMRKX",  "INSPCT": "LMS6H",  
+        "LIENPD": "LMATA",  "MEFILE": "CPN",    "OABIDS": "CPN",    
+        "OCNFMD": "CPN",    "PPAUDT": "KMC",    "PPCOMP": "LUZ",    
+        "PPVAL2": "LMVN1",  "PPVALU": "LMVN1",  "PREPRP": "LUZ",    
+        "PRPDMO": "LMSN5",  "PRPDRC": "BDZ",    "PRPLEN": "LMSN5",  
+        "PRPVEN": "KMC",    "PRPUTL": "TLR",    "PRPVIH": "LMSN5",  
+        "PRPVIO": "LMSN5",  "REGCUR": "CPN",    "RSINSP": "LMRKX",  
+        "SSDNTS": "HXH",    "SSSAPR": "HXH",    "SSSECR": "HXH",    
+        "TIMLNE": "CPN",    "UTLDIS": "LUZ",    "VACLND": "KMC",    
+        "VACREB": "KMC",    "VIOVPR": "LMSN5",  "VIOLTR": "LMSN5"
+    };
+
+    // --- POST-SALE STANDARD DEFAULTS (Preserved from old script) ---
+    const postSaleMatrix: Record<string, string> = {
+        "TAXCLM": "LMAGX", "UTLDIS": "JCI", "PRPFUP": "CLOSED",
+        "PRPVEN": "TLR", "BNDTRK": "LMSH4", "PREPRP": "HXH"
+    };
+
+    // Helper: Auto-Prepend "LM" for Moder offshore codes
+    function formatPopulatedId(id: string): string {
+        const val = id.trim().toUpperCase();
+        if (!val) return "";
+        // If it's already an LM code or a known onshore rep, leave it alone
+        const onshore = ["KMC", "TLR", "DSH", "CPN", "LUZ", "HXH", "BDZ", "ATW", "JCI", "CLOSED", "FA9"];
+        if (val.startsWith("LM") || onshore.includes(val)) return val;
+        // Otherwise, it's a raw offshore code, so prepend LM
+        return "LM" + val;
+    }
+
+    const sheetNames = ["Task Summary", "Violations - Liens"];
+
+    for (let sheetName of sheetNames) {
+        const sheet = workbook.getWorksheet(sheetName);
+        if (!sheet) continue;
+
+        const data = sheet.getUsedRange().getValues() as string[][];
+        const headers = data[0];
+
+        // Find columns dynamically
+        let cVendor = -1, cAssigned = -1, cPrePost = -1, cTaskId = -1;
+        let cReoProc = -1, cState = -1, cTerm = -1, cClient = -1;
+
+        for (let i = 0; i < headers.length; i++) {
+            const h = String(headers[i]).trim().toUpperCase();
+            if (h === "VENDOR VS CENLAR TASK") cVendor = i;
+            if (h === "ASSIGNED") cAssigned = i;
+            if (h === "PRE VS POST INDICATOR") cPrePost = i;
+            if (h === "TASK_ID") cTaskId = i;
+            if (h === "REO_PROCESSOR_ID") cReoProc = i;
+            if (h === "PROPERTY_STATE") cState = i;
+            if (h === "TERM DIGIT") cTerm = i;
+            if (h === "CLIENT NAME") cClient = i;
+        }
+
+        if (cVendor === -1 || cAssigned === -1) continue;
+
+        for (let r = 1; r < data.length; r++) {
+            // New Hampshire Rule
+            if (sheetName === "Violations - Liens" && cState !== -1) {
+                if (String(data[r][cState]).trim().toUpperCase() === "NH") continue;
+            }
+
+            const vendorVal = String(data[r][cVendor]).trim().toUpperCase();
+            if (vendorVal !== "CENLAR") continue;
+
+            const prePost = cPrePost !== -1 ? String(data[r][cPrePost]).trim().toUpperCase() : "";
+            const taskId = cTaskId !== -1 ? String(data[r][cTaskId]).trim().toUpperCase() : "";
+            const reoProc = cReoProc !== -1 ? String(data[r][cReoProc]).trim().toUpperCase() : "";
+            const client = cClient !== -1 ? String(data[r][cClient]).trim() : "";
+            const state = cState !== -1 ? String(data[r][cState]).trim().toUpperCase() : "";
+            const termDigit = parseInt(cTerm !== -1 ? String(data[r][cTerm]).trim() : "", 10);
+
+            if (prePost === "PRE") {
+                let moderId: string | null = null;
+                
+                // Handle the "Assign as populated" logic for PPFU tasks
+                if (["PPFU03", "PPFU06", "PPFU11", "PPFU21", "PRPAD3", "REFUND"].includes(taskId)) {
+                    moderId = formatPopulatedId(String(data[r][cAssigned]));
+                } else {
+                    moderId = preSaleMatrix[taskId] || null;
+                }
+
+                if (moderId) sheet.getCell(r, cAssigned).setValue(moderId);
+
+            } else if (prePost === "POST") {
+                let moderId: string | null = null;
+
+                // --- MERGED LOGIC: HTML Matrix + Old Script Legacy Rules ---
+                switch (taskId) {
+                    case "FHAAPR":
+                        moderId = "DSH"; 
+                        break;
+                    case "FHAICC":
+                        if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
+                        else moderId = "LMAGX";
+                        break;
+                    case "FHAVAC":
+                        if (client === "Global Federal Credit Union" || state === "AK") moderId = "CPN";
+                        else if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
+                        else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
+                        // --- Restored Legacy REO Codes ---
+                        else if (reoProc === "DRR" || reoProc === "PHS") moderId = "LMPHS";
+                        else if (reoProc === "VID" || reoProc === "HV1") moderId = "LMHV1";
+                        else if (reoProc === "1NM") moderId = "LM1NM";
+                        else if (reoProc === "ECC" || reoProc === "ACC") moderId = (termDigit < 50) ? "LMHV1" : "LMPHS";
+                        else if (reoProc === "CPN") moderId = "CPN";
+                        else moderId = "LMAGX";
+                        break;
+                    case "FHAOCC":
+                        if (client === "Global Federal Credit Union" || state === "AK") moderId = "CPN";
+                        else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
+                        // --- Restored Legacy Default Split ---
+                        else moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
+                        break;
+                    case "NOTICC":
+                    case "OAVIOB":
+                        if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
+                        else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
+                        else if (reoProc === "ECC" || reoProc === "ACC") moderId = (termDigit < 50) ? "LMHV1" : "LM1NM";
+                        // --- Restored Legacy REO Codes for NOTICC ---
+                        else if (taskId === "NOTICC") {
+                            if (reoProc === "DRR" || reoProc === "PHS") moderId = "LMPHS";
+                            else if (reoProc === "VID" || reoProc === "HV1") moderId = "LMHV1";
+                            else if (reoProc === "1NM") moderId = "LM1NM";
+                            else if (reoProc === "CPN") moderId = "CPN";
+                        }
+                        break;
+                    case "PRPVIO":
+                    case "PRPVIH":
+                    case "PRPDMO":
+                    case "PRPLEN":
+                        if (reoProc === "ECC" || reoProc === "ACC") moderId = "LMSN5";
+                        else if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
+                        else if (reoProc === "EVI") moderId = "DSH";
+                        else moderId = "LMSN5";
+                        break;
+                    case "PRPICF":
+                        moderId = (termDigit < 50) ? "LMHV1" : "LM1NM";
+                        break;
+                    case "PPVALU":
+                        if (reoProc === "ECC" || reoProc === "ACC") moderId = "LMSH4";
+                        else if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
+                        else moderId = "LMSH4";
+                        break;
+                    case "ALERTT":
+                    case "FCREPP":
+                        if (reoProc === "EVI") moderId = "DSH";
+                        else if (reoProc === "ECC" || reoProc === "RCP" || reoProc === "RCV") moderId = "TLR";
+                        else moderId = "TLR";
+                        break;
+                    case "BKPOST":
+                        if (reoProc === "EVI") moderId = "DSH";
+                        break;
+                    case "CEVALU":
+                        moderId = "LMSH4";
+                        break;
+                    case "CONREO":
+                        moderId = "TLR";
+                        break;
+                    case "MEFILE":
+                    case "OABIDS":
+                        moderId = "CPN";
+                        break;
+                    case "PPCOMP":
+                        moderId = "LUZ";
+                        break;
+                    case "REOTCL":
+                        if (reoProc === "RCP" || reoProc === "RCV") moderId = "TLR";
+                        else moderId = "KDW";
+                        break;
+                    case "TIMLNE":
+                        if (reoProc === "EVI") moderId = "DSH";
+                        else moderId = "TLR";
+                        break;
+                    default:
+                        moderId = postSaleMatrix[taskId] || null;
+                }
+
+                if (moderId) {
+                    sheet.getCell(r, cAssigned).setValue(moderId);
+                }
+            }
+        }
+    }
+    console.log("Script 2 Matrix logic completed successfully.");
+}
