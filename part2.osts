@@ -1,6 +1,6 @@
 function main(workbook: ExcelScript.Workbook) {
 
-    // --- PRE-SALE MATRIX (Fully Updated from HTML) ---
+    // --- PRE-SALE MATRIX ---
     const preSaleMatrix: Record<string, string> = {
         "ALLERT": "KMC",    "ALERTT": "KMC",    "BADPRP": "LMGS3",  
         "BNDTRK": "LMSH4",  "BLNKIM": "KMC",    "BNKPRP": "TLR",    
@@ -18,7 +18,7 @@ function main(workbook: ExcelScript.Workbook) {
         "VACREB": "KMC",    "VIOVPR": "LMSN5",  "VIOLTR": "LMSN5"
     };
 
-    // --- POST-SALE STANDARD DEFAULTS (Preserved from old script) ---
+    // --- POST-SALE STANDARD DEFAULTS ---
     const postSaleMatrix: Record<string, string> = {
         "TAXCLM": "LMAGX", "UTLDIS": "JCI", "PRPFUP": "CLOSED",
         "PRPVEN": "TLR", "BNDTRK": "LMSH4", "PREPRP": "HXH"
@@ -28,10 +28,8 @@ function main(workbook: ExcelScript.Workbook) {
     function formatPopulatedId(id: string): string {
         const val = id.trim().toUpperCase();
         if (!val) return "";
-        // If it's already an LM code or a known onshore rep, leave it alone
         const onshore = ["KMC", "TLR", "DSH", "CPN", "LUZ", "HXH", "BDZ", "ATW", "JCI", "CLOSED", "FA9"];
         if (val.startsWith("LM") || onshore.includes(val)) return val;
-        // Otherwise, it's a raw offshore code, so prepend LM
         return "LM" + val;
     }
 
@@ -63,10 +61,8 @@ function main(workbook: ExcelScript.Workbook) {
         if (cVendor === -1 || cAssigned === -1) continue;
 
         for (let r = 1; r < data.length; r++) {
-            // New Hampshire Rule
-            if (sheetName === "Violations - Liens" && cState !== -1) {
-                if (String(data[r][cState]).trim().toUpperCase() === "NH") continue;
-            }
+            
+            // NOTE: The old generic 'skip NH' rule was DELETED here so NH can be properly assigned to DSH.
 
             const vendorVal = String(data[r][cVendor]).trim().toUpperCase();
             if (vendorVal !== "CENLAR") continue;
@@ -81,7 +77,6 @@ function main(workbook: ExcelScript.Workbook) {
             if (prePost === "PRE") {
                 let moderId: string | null = null;
                 
-                // Handle the "Assign as populated" logic for PPFU tasks
                 if (["PPFU03", "PPFU06", "PPFU11", "PPFU21", "PRPAD3", "REFUND"].includes(taskId)) {
                     moderId = formatPopulatedId(String(data[r][cAssigned]));
                 } else {
@@ -93,7 +88,6 @@ function main(workbook: ExcelScript.Workbook) {
             } else if (prePost === "POST") {
                 let moderId: string | null = null;
 
-                // --- MERGED LOGIC: HTML Matrix + Old Script Legacy Rules ---
                 switch (taskId) {
                     case "FHAAPR":
                         moderId = "DSH"; 
@@ -106,7 +100,6 @@ function main(workbook: ExcelScript.Workbook) {
                         if (client === "Global Federal Credit Union" || state === "AK") moderId = "CPN";
                         else if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
                         else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
-                        // --- Restored Legacy REO Codes ---
                         else if (reoProc === "DRR" || reoProc === "PHS") moderId = "LMPHS";
                         else if (reoProc === "VID" || reoProc === "HV1") moderId = "LMHV1";
                         else if (reoProc === "1NM") moderId = "LM1NM";
@@ -117,7 +110,6 @@ function main(workbook: ExcelScript.Workbook) {
                     case "FHAOCC":
                         if (client === "Global Federal Credit Union" || state === "AK") moderId = "CPN";
                         else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
-                        // --- Restored Legacy Default Split ---
                         else moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
                         break;
                     case "NOTICC":
@@ -125,7 +117,6 @@ function main(workbook: ExcelScript.Workbook) {
                         if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
                         else if (reoProc === "EVI") moderId = (termDigit < 50) ? "LMGUC" : "LMPHS";
                         else if (reoProc === "ECC" || reoProc === "ACC") moderId = (termDigit < 50) ? "LMHV1" : "LM1NM";
-                        // --- Restored Legacy REO Codes for NOTICC ---
                         else if (taskId === "NOTICC") {
                             if (reoProc === "DRR" || reoProc === "PHS") moderId = "LMPHS";
                             else if (reoProc === "VID" || reoProc === "HV1") moderId = "LMHV1";
@@ -137,10 +128,11 @@ function main(workbook: ExcelScript.Workbook) {
                     case "PRPVIH":
                     case "PRPDMO":
                     case "PRPLEN":
-                        if (reoProc === "ECC" || reoProc === "ACC") moderId = "LMSN5";
+                        // FIX: Explicit rule for DSH -> NH State Only
+                        if (state === "NH") moderId = "DSH";
+                        else if (reoProc === "ECC" || reoProc === "ACC") moderId = "LMSN5";
                         else if (reoProc === "RCP" || reoProc === "RCV") moderId = "LMVKM";
-                        else if (reoProc === "EVI") moderId = "DSH";
-                        else moderId = "LMSN5";
+                        else moderId = "LMSN5"; // Default if not NH, ECC, ACC, RCP, or RCV
                         break;
                     case "PRPICF":
                         moderId = (termDigit < 50) ? "LMHV1" : "LM1NM";
@@ -190,5 +182,5 @@ function main(workbook: ExcelScript.Workbook) {
             }
         }
     }
-    console.log("Script 2 Matrix logic completed successfully.");
+    console.log("Script 2 Matrix logic completed successfully. NH Rule Applied.");
 }
